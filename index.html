@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V68</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V69</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
@@ -12,66 +12,90 @@
         :root { --p: #CC0000; --bg: #0A0A0A; --card: #141414; --gold: #FFD700; --admin: #00CCFF; --yonetici: #AA00FF; }
         * { box-sizing: border-box; transition: 0.3s; font-family: 'DM Sans', sans-serif; }
         body { margin: 0; background: var(--bg); color: #EEE; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 260px; background: #000; border-right: 2px solid var(--p); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; }
-        .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 6px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .sidebar { width: 260px; background: #000; border-right: 2px solid var(--p); display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; overflow-y: auto; }
+        .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 6px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; display: flex; align-items: center; gap: 10px; font-size: 13px; }
         .nav-btn:hover, .active-btn { background: var(--p); color: white; }
         .main { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #1a0000, #0A0A0A); }
         .panel { display: none; }
         .aktif { display: block !important; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; text-align: center; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; margin-bottom: 15px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
-        .card img { width: 100%; border-radius: 8px; height: 150px; object-fit: cover; }
         .badge { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
         .b-kurucu { background: var(--gold); color: #000; }
         .b-admin { background: var(--admin); color: #000; }
         .b-yonetici { background: var(--yonetici); color: #fff; }
+        .kurucu-mode .kurucu-paneli, .admin-mode .editor-paneli, .yonetici-mode .editor-paneli, .kurucu-mode .editor-paneli { display: block !important; }
         .kurucu-paneli, .editor-paneli { display: none; }
-        .kurucu-mode .kurucu-paneli, .kurucu-mode .editor-paneli { display: block !important; }
-        .admin-mode .editor-paneli, .yonetici-mode .editor-paneli { display: block !important; }
-        input, select { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; margin-bottom: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: #fff; border-radius: 5px; margin-bottom: 10px; }
         .action-btn { background: var(--p); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
-        .del-btn { background: #500; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px; margin-top: 10px; display: none; }
+        .del-btn { background: #500; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer; font-size: 10px; display: none; margin-top: 10px; }
         .kurucu-mode .del-btn { display: inline-block !important; }
     </style>
 </head>
 <body id="app-body">
 
 <div class="sidebar">
-    <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid var(--p); margin-bottom:20px;">
+    <div style="text-align:center; padding-bottom:15px; border-bottom:1px solid var(--p); margin-bottom:15px;">
         <h3 style="color:var(--p); margin:0;">AKKUŞLAR SEYAHAT</h3>
         <small style="color:var(--gold)">👑 Kurucu: 乂✯ҠƐꝈƐβƐҠ✯乂</small>
     </div>
-    <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Terminal</button>
+    <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Sayfa</button>
     <button class="nav-btn" onclick="sayfa(2, this)">👤 Ekip Kadrosu</button>
+    <button class="nav-btn" onclick="sayfa(4, this)">📜 Ekip Kuralları</button>
     <button class="nav-btn" onclick="sayfa(8, this)">🖼️ Galeri</button>
     <button class="nav-btn" onclick="sayfa(7, this)">🛠️ Modlar</button>
     <button class="nav-btn" onclick="sayfa(11, this)">🎵 Müzikler</button>
-    <button class="nav-btn" onclick="sayfa(3, this)">🎫 Bilet Al</button>
-    <div style="margin-top:auto;">
-        <button class="nav-btn" style="color:var(--gold);" onclick="giris('kurucu')">👑 KURUCU</button>
-        <button class="nav-btn" style="color:var(--admin);" onclick="giris('admin')">🛡️ ADMİN</button>
-        <button class="nav-btn" style="color:var(--yonetici);" onclick="giris('yonetici')">⚙️ YÖNETİCİ</button>
+    <button class="nav-btn" onclick="sayfa(5, this)">✍️ Ekibe Katıl</button>
+    <button class="nav-btn" onclick="sayfa(3, this)">🎫 Bilet Sistemi</button>
+    <div style="margin-top:auto; padding-top:10px; border-top:1px solid #222;">
+        <button class="nav-btn" style="color:var(--gold);" onclick="giris('kurucu')">👑 KURUCU GİRİŞİ</button>
+        <button class="nav-btn" style="color:var(--admin);" onclick="giris('admin')">🛡️ ADMİN GİRİŞİ</button>
     </div>
 </div>
 
 <div class="main">
     <div id="p1" class="panel aktif">
-        <div class="card"><h1>HOŞ GELDİN KAPTAN!</h1><p>İstanbul - Ankara - Denizli - Hatay Hattı</p></div>
+        <div class="card" style="text-align:center;"><h1>TERMİNALE HOŞ GELDİNİZ</h1><p>İstanbul - Ankara - Denizli - Hatay Güzergahı</p></div>
         <div class="card">
-            <h3>📢 Telsiz</h3>
-            <div id="msg-list" style="height:200px; overflow-y:auto; background:#000; padding:10px; text-align:left; border-radius:8px;"></div>
-            <div style="display:flex; gap:5px; margin-top:10px;">
-                <input type="text" id="chat-nick" placeholder="Adın" style="width:30%;">
-                <input type="text" id="chat-input" placeholder="Mesajın..." style="width:70%;">
+            <h3>📢 Ekip Telsizi (Canlı)</h3>
+            <div id="msg-list" style="height:250px; overflow-y:auto; background:#000; padding:15px; border-radius:8px; border:1px solid #222;"></div>
+            <div style="display:flex; gap:8px; margin-top:10px;">
+                <input type="text" id="chat-nick" placeholder="Kaptan Adı" style="width:25%;">
+                <input type="text" id="chat-input" placeholder="Mesajınızı yazın..." style="width:75%;">
                 <button onclick="mesajAt()" class="action-btn" style="width:100px;">GÖNDER</button>
             </div>
         </div>
     </div>
 
-    <div id="p2" class="panel"><h1>👤 Ekip Kadrosu</h1><div id="kadro-listesi" class="grid"></div></div>
+    <div id="p2" class="panel">
+        <h1>👤 Aktif Ekip Kadrosu</h1>
+        <div id="kadro-listesi" class="grid"></div>
+    </div>
+
+    <div id="p4" class="panel">
+        <h1>📜 Akkuşlar Seyahat Kuralları</h1>
+        <div class="card">
+            <p>1. Konvoy sırasında gereksiz korna çalmak yasaktır.</p>
+            <p>2. Telsizden (Sohbetten) küfür ve hakaret kesinlikle yasaktır.</p>
+            <p>3. Konvoy hızı ve sırası kaptanlar tarafından belirlenir.</p>
+            <p>4. Discord ve Terminalde aktif olmayanlar ekip dışı kalır.</p>
+            <p>5. Her üye Akkuşlar Seyahat logosunu kullanmak zorundadır.</p>
+        </div>
+    </div>
+
+    <div id="p5" class="panel">
+        <h1>✍️ Ekibe Katılım Formu</h1>
+        <div class="card">
+            <input type="text" id="k-ad" placeholder="Adınız ve Soyadınız">
+            <input type="number" id="k-yas" placeholder="Yaşınız">
+            <textarea id="k-deneyim" placeholder="Daha önce hangi ekiplerde bulundunuz?"></textarea>
+            <button onclick="katil()" class="action-btn">BAŞVURUYU GÖNDER</button>
+        </div>
+    </div>
+
     <div id="p8" class="panel"><h1>🖼️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
-    <div id="p7" class="panel"><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
-    <div id="p11" class="panel"><h1>🎵 Müzikler</h1><div id="list-muzik" class="grid"></div></div>
+    <div id="p7" class="panel"><h1>🛠️ Mod Merkezi</h1><div id="list-mod" class="grid"></div></div>
+    <div id="p11" class="panel"><h1>🎵 Müzik Arşivi</h1><div id="list-muzik" class="grid"></div></div>
     <div id="p3" class="panel"><h1>🎫 Bilet Sistemi</h1><div class="card"><input type="text" id="b-ad" placeholder="Yolcu Adı"><button onclick="biletAt()" class="action-btn">BİLET KES</button></div><div id="list-bilet"></div></div>
 
     <div id="p13" class="panel">
@@ -80,16 +104,20 @@
             <div class="card editor-paneli">
                 <h3>DOSYA YÜKLE</h3>
                 <select id="i-tip"><option value="galeri">Galeri</option><option value="mod">Mod</option><option value="muzik">Müzik</option></select>
-                <input type="text" id="i-bas" placeholder="Dosya Başlığı">
+                <input type="text" id="i-bas" placeholder="Başlık">
                 <input type="file" id="i-file">
-                <button class="action-btn" onclick="yukle()">YÜKLEMEYİ BAŞLAT</button>
+                <button class="action-btn" onclick="yukle()">YÜKLE</button>
                 <div id="u-durum" style="margin-top:10px; color:var(--gold);"></div>
             </div>
-            <div class="card kurucu-paneli" style="border:2px solid var(--gold);">
-                <h3>👑 ÜYE YÖNETİMİ</h3>
+            <div class="card kurucu-paneli">
+                <h3>👑 ÜYE EKLE</h3>
                 <input type="text" id="r-ad" placeholder="Kaptan Adı">
                 <select id="r-rol"><option value="uye">Üye</option><option value="admin">Admin</option><option value="yonetici">Yönetici</option></select>
-                <button class="action-btn" onclick="rolVer()">KADROYA EKLE</button>
+                <button class="action-btn" onclick="rolVer()">KAYDET</button>
+            </div>
+            <div class="card kurucu-paneli" style="grid-column: 1 / -1;">
+                <h3>📥 Gelen Başvurular</h3>
+                <div id="list-basvuru"></div>
             </div>
         </div>
     </div>
@@ -113,7 +141,6 @@
         let s = prompt("Şifre:");
         if(tip==='kurucu' && s==='1907akkus'){ aktifRol="kurucu"; document.getElementById('app-body').className='kurucu-mode'; sayfa(13); }
         else if(tip==='admin' && s==='admin123'){ aktifRol="admin"; document.getElementById('app-body').className='admin-mode'; sayfa(13); }
-        else if(tip==='yonetici' && s==='yonetici123'){ aktifRol="yonetici"; document.getElementById('app-body').className='yonetici-mode'; sayfa(13); }
     }
 
     function sayfa(n, btn) {
@@ -124,45 +151,57 @@
     }
 
     async function yukle() {
-        const file = document.getElementById('i-file').files[0];
-        const tip = document.getElementById('i-tip').value;
-        const bas = document.getElementById('i-bas').value;
-        const durum = document.getElementById('u-durum');
-        if(!file || !bas) return alert("Eksik bilgi!");
-
-        durum.innerText = "Yükleniyor...";
-        try {
-            const ref = storage.ref(`v68/${Date.now()}_${file.name}`);
-            await ref.put(file);
-            const url = await ref.getDownloadURL();
-            await db.collection("icerik").add({tip, bas, url, tarih: Date.now()});
-            durum.innerText = "✅ YÜKLENDİ!";
-        } catch (e) { durum.innerText = "❌ Hata: " + e.message; }
+        const f = document.getElementById('i-file').files[0];
+        const t = document.getElementById('i-tip').value;
+        const b = document.getElementById('i-bas').value;
+        if(!f || !b) return;
+        document.getElementById('u-durum').innerText = "Yükleniyor...";
+        const ref = storage.ref(`v69/${f.name}`);
+        await ref.put(f);
+        const url = await ref.getDownloadURL();
+        await db.collection("icerik").add({tip:t, bas:b, url, tarih: Date.now()});
+        document.getElementById('u-durum').innerText = "✅ Başarılı!";
     }
 
     db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => {
         let g="", m="", mu="";
         s.docs.forEach(d => {
-            let data = d.data();
+            let dt = d.data();
             let sil = `<button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button>`;
-            let h = `<div class="card">${data.tip!=='muzik' ? `<img src="${data.url}">` : '🎵'} <br><b>${data.bas}</b><br>${sil}</div>`;
-            if(data.tip==="galeri") g+=h; else if(data.tip==="mod") m+=h; else mu+=h;
+            let h = `<div class="card" style="text-align:center;">${dt.tip!=='muzik' ? `<img src="${dt.url}" style="width:100%; border-radius:8px;">` : '🎵'} <br><b>${dt.bas}</b><br>${sil}</div>`;
+            if(dt.tip==="galeri") g+=h; else if(dt.tip==="mod") m+=h; else mu+=h;
         });
-        document.getElementById('list-galeri').innerHTML = g;
-        document.getElementById('list-mod').innerHTML = m;
-        document.getElementById('list-muzik').innerHTML = mu;
+        document.getElementById('list-galeri').innerHTML = g; document.getElementById('list-mod').innerHTML = m; document.getElementById('list-muzik').innerHTML = mu;
     });
 
     db.collection("ekip").onSnapshot(s => {
         document.getElementById('kadro-listesi').innerHTML = s.docs.map(d => {
-            let data = d.data();
-            let ikon = data.rol==='admin' ? '🛡️' : (data.rol==='yonetici' ? '⚙️' : '👤');
-            return `<div class="card"><span class="badge b-${data.rol}">${ikon} ${data.rol}</span><br><b>${data.ad}</b><br><button class="del-btn" onclick="sil('ekip','${d.id}')">AT</button></div>`;
+            let dt = d.data();
+            let ikon = dt.rol==='admin' ? '🛡️' : (dt.rol==='yonetici' ? '⚙️' : '👤');
+            return `<div class="card" style="text-align:center;"><span class="badge b-${dt.rol}">${ikon} ${dt.rol}</span><br><br><b>${dt.ad}</b><br><button class="del-btn" onclick="sil('ekip','${d.id}')">KADRODAN AT</button></div>`;
         }).join('');
     });
 
-    function mesajAt() { db.collection("sohbet").add({isim: document.getElementById('chat-nick').value, msg: document.getElementById('chat-input').value, tarih: Date.now()}); document.getElementById('chat-input').value=""; }
-    db.collection("sohbet").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
+    function katil() {
+        db.collection("basvurular").add({ad: document.getElementById('k-ad').value, yas: document.getElementById('k-yas').value, d: document.getElementById('k-deneyim').value});
+        alert("Başvuru kaptana iletildi!");
+    }
+
+    db.collection("basvurular").onSnapshot(s => {
+        document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} | Yaş: ${d.data().yas} <br> ${d.data().d} <br> <button class="del-btn" onclick="sil('basvurular','${d.id}')">SİL</button></div>`).join('');
+    });
+
+    function mesajAt() { 
+        let n = document.getElementById('chat-nick').value;
+        let m = document.getElementById('chat-input').value;
+        if(n && m) db.collection("sohbet").add({isim: n, msg: m, tarih: Date.now()});
+        document.getElementById('chat-input').value="";
+    }
+    
+    db.collection("sohbet").orderBy("tarih","desc").limit(20).onSnapshot(s => {
+        document.getElementById('msg-list').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join('');
+    });
+
     function rolVer() { db.collection("ekip").add({ad: document.getElementById('r-ad').value, rol: document.getElementById('r-rol').value}); }
     function biletAt() { db.collection("biletler").add({ad: document.getElementById('b-ad').value}); }
     db.collection("biletler").onSnapshot(s => { document.getElementById('list-bilet').innerHTML = s.docs.map(d => `<div class="card">🎫 ${d.data().ad} <button class="del-btn" onclick="sil('biletler','${d.id}')">İPTAL</button></div>`).join(''); });
