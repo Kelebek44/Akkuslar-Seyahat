@@ -63,10 +63,7 @@
     <div id="p1" class="panel aktif">
         <h1>AKKUŞLAR SEYAHAT</h1>
         <p>Hoş geldin Kurucu Kelebek. Terminal kontrolün altında!</p>
-        <div class="grid">
-            <div class="card"><h3>9</h3><p>Kaptan</p></div>
-            <div class="card"><h3>24/7</h3><p>Aktif</p></div>
-        </div>
+        <div class="grid"><div class="card"><h3>9</h3><p>Kaptan</p></div><div class="card"><h3>24/7</h3><p>Aktif</p></div></div>
     </div>
     <div id="p2" class="panel"><h1>👥 Ekip Kadrosu</h1><div id="list-ekip" class="grid"></div></div>
     <div id="p3" class="panel"><h1>🎫 Bilet Sistemi</h1><div class="card"><input type="text" id="b-ad" placeholder="Yolcu Adı..."><button class="action-btn" onclick="biletKes()">BİLETİ KES</button></div><div id="list-bilet" class="grid"></div></div>
@@ -76,15 +73,15 @@
     <div id="p7" class="panel"><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
     <div id="p8" class="panel"><h1>🎵 Müzikler</h1><div id="list-muzik" class="grid"></div></div>
     <div id="p10" class="panel"><h1>🖼️ Arka Planlar</h1><div id="list-bg" class="grid"></div></div>
-    <div id="p11" class="panel"><h1>📞 İletişim</h1><div class="card"><a href="https://www.tiktok.com/@kelebekmiisaliii" style="color:red">TikTok Kelebek</a><br><a href="https://www.tiktok.com/@akkusailesi20" style="color:red">TikTok Akkuş Ailesi</a></div></div>
+    <div id="p11" class="panel"><h1>📞 İletişim</h1><div class="card"><a href="https://www.tiktok.com/@kelebekmiisaliii" style="color:red; text-decoration:none;">TikTok Kelebek</a><br><a href="https://www.tiktok.com/@akkusailesi20" style="color:red; text-decoration:none;">TikTok Akkuş Ailesi</a></div></div>
     <div id="p12" class="panel"><h1>📩 Ekibe Katıl</h1><div class="card"><p>Başvuru için TikTok'tan ulaşın.</p></div></div>
 
     <div id="p9" class="panel">
         <h1>⚙️ YÖNETİM MERKEZİ</h1>
         <div class="grid">
             <div class="card" id="kurucu-ozel" style="display:none; border:2px solid gold;">
-                <span class="badge badge-kurucu">Kurucu</span>
-                <h3>Rol Ver</h3>
+                <span class="badge badge-kurucu">Kurucu Yetkisi</span>
+                <h3>Ekip Yönetimi</h3>
                 <input type="text" id="ekip-ad" placeholder="İsim...">
                 <select id="ekip-rol"><option value="uye">Üye</option><option value="admin">Admin</option></select>
                 <button class="action-btn" onclick="ekipEkle()">KAYDET</button>
@@ -97,7 +94,7 @@
                 <button class="action-btn" onclick="icerikEkle()">YAYINLA</button>
             </div>
         </div>
-        <button class="action-btn" style="background:#222; margin-top:20px;" onclick="location.reload()">ÇIKIŞ</button>
+        <button class="action-btn" style="background:#222; margin-top:20px;" onclick="location.reload()">GÜVENLİ ÇIKIŞ</button>
     </div>
 </div>
 
@@ -124,7 +121,7 @@
         } else if(s === "akkus123") {
             aktifYetki = "admin";
             sayfa(9);
-        }
+        } else { alert("Hatalı!"); }
     }
 
     function sayfa(n, btn) {
@@ -141,7 +138,8 @@
     db.collection("icerik").onSnapshot(s => {
         const data = s.docs.map(d => ({id: d.id, ...d.data()}));
         const render = (tip, id) => {
-            document.getElementById(id).innerHTML = data.filter(i => i.tip === tip).map(i => `<div class="card">${i.url ? `<img src="${i.url}">` : ''}<br><b>${i.i_baslik}</b><br><button class="del-btn" onclick="veriSil('icerik','${i.id}')">SİL</button></div>`).join('');
+            const el = document.getElementById(id);
+            if(el) el.innerHTML = data.filter(i => i.tip === tip).map(i => `<div class="card">${i.url ? `<img src="${i.url}">` : ''}<br><b>${i.i_baslik}</b><br><button class="del-btn" onclick="veriSil('icerik','${i.id}')">SİL</button></div>`).join('');
         };
         render('galeri', 'list-galeri'); render('video', 'list-video'); render('mod', 'list-mod'); render('muzik', 'list-muzik'); render('bg', 'list-bg');
     });
@@ -152,7 +150,7 @@
 
     function ekipEkle() { db.collection("ekip").add({ ad: document.getElementById('ekip-ad').value, rol: document.getElementById('ekip-rol').value }); }
     function icerikEkle() { db.collection("icerik").add({ tip: document.getElementById('i-tip').value, i_baslik: document.getElementById('i-baslik').value, url: document.getElementById('i-url').value }); }
-    function biletKes() { db.collection("biletler").add({ ad: document.getElementById('b-ad').value }); }
+    function biletKes() { if(document.getElementById('b-ad').value) db.collection("biletler").add({ ad: document.getElementById('b-ad').value }); }
     function veriSil(col, id) {
         if(aktifYetki !== "kurucu") return alert("YETKİ YOK!");
         if(confirm("Silinsin mi?")) db.collection(col).doc(id).delete();
