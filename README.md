@@ -3,145 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | RESMİ TERMİNAL V33</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V36</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #CC0000; --bg: #0A0A0A; --card: #141414; --gold: #FFD700; --admin: #00CCFF; }
+        :root { --p: #CC0000; --bg: #0A0A0A; --card: #141414; --gold: #FFD700; }
         * { box-sizing: border-box; }
-        body { margin: 0; background: var(--bg); color: #EEE; font-family: 'DM Sans', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        body { margin: 0; background: var(--bg); color: #EEE; font-family: 'Space Grotesk', sans-serif; display: flex; height: 100vh; overflow: hidden; }
         
-        /* SOL MENÜ (NAVIGASYON) */
-        .sidebar { width: 280px; background: #000; border-right: 3px solid var(--p); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; flex-shrink: 0; }
-        .logo-area { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--p); padding-bottom: 15px; }
-        .logo-text { color: var(--p); font-size: 20px; font-weight: 900; font-family: 'Space Grotesk'; text-transform: uppercase; margin: 0; }
-        .kurucu-text { color: var(--gold); font-size: 12px; font-weight: bold; margin-top: 5px; display: block; }
-        
-        .nav-label { color: #555; font-size: 10px; font-weight: bold; text-transform: uppercase; margin: 15px 0 5px; letter-spacing: 1px; }
-        .nav-btn { background: #111; color: #AAA; padding: 10px; margin-bottom: 4px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 6px; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        .sidebar { width: 280px; background: #000; border-right: 3px solid var(--p); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .logo-area { text-align: center; border-bottom: 2px solid var(--p); padding-bottom: 10px; margin-bottom: 15px; }
+        .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 5px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; }
         .nav-btn:hover { background: var(--p); color: white; }
         .active-btn { background: var(--p) !important; color: white !important; }
 
-        /* ANA ALAN */
         .main { flex: 1; padding: 30px; overflow-y: auto; background: radial-gradient(circle at top right, #1a0000, #0A0A0A); }
         .panel { display: none; }
-        .aktif { display: block !important; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .aktif { display: block !important; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #222; text-align: center; }
-        .card img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        /* ANA SAYFA AFİŞİ */
+        .hero-banner { width: 100%; height: 350px; border-radius: 20px; border: 3px solid var(--p); object-fit: cover; margin-bottom: 20px; display: none; }
         
-        /* ROLLER & YETKİ */
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .badge-kurucu { background: var(--gold); color: #000; }
-        .badge-admin { background: var(--admin); color: #000; }
-        .badge-uye { background: #444; color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 15px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; }
         
-        .del-btn { background: #600; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; font-size: 11px; }
-        .kurucu-modu .del-btn { display: inline-block !important; }
-        
-        input, select, textarea { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 6px; margin-bottom: 8px; }
-        .action-btn { background: var(--p); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        /* OYUN */
+        #game-area { text-align: center; background: #000; padding: 20px; border-radius: 15px; border: 2px solid #444; }
+        canvas { background: #111; border: 2px solid var(--p); max-width: 100%; }
+
+        /* SOHBET */
+        .chat-area { height: 250px; overflow-y: auto; background: #050505; border: 1px solid #333; padding: 10px; border-radius: 10px; text-align: left; margin-bottom: 10px; }
+        .chat-msg { margin-bottom: 8px; font-size: 14px; }
+        .chat-name { color: var(--gold); font-weight: bold; }
+
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
+        .action-btn { background: var(--p); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body id="app-body">
 
 <div class="sidebar">
     <div class="logo-area">
-        <h1 class="logo-text">AKKUŞLAR SEYAHAT</h1>
-        <span class="kurucu-text">Kurucu: 乂✯ҠƐꝈƐβƐҠ✯乂</span>
+        <h2 style="color:var(--p); margin:0;">AKKUŞLAR</h2>
+        <span style="color:var(--gold); font-size:12px; font-weight:bold;">Kurucu: 乂✯ҠƐꝈƐβƐҠ✯乂</span>
     </div>
-
-    <div class="nav-label">TERMİNAL</div>
     <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Sayfa</button>
-    <button class="nav-btn" onclick="sayfa(2, this)">👥 Üyeler & Kadro</button>
-    <button class="nav-btn" onclick="sayfa(3, this)">🛣️ Konvoy Takvimi</button>
-    <button class="nav-btn" onclick="sayfa(4, this)">🎫 Bilet Al</button>
-
-    <div class="nav-label">ATÖLYE & MEDYA</div>
-    <button class="nav-btn" onclick="sayfa(5, this)">🎞️ Galeri (Resim)</button>
-    <button class="nav-btn" onclick="sayfa(6, this)">🎥 Video Merkezi</button>
-    <button class="nav-btn" onclick="sayfa(7, this)">🛠️ Mod Merkezi</button>
-    <button class="nav-btn" onclick="sayfa(8, this)">🎨 Kaplamalar</button>
-    <button class="nav-btn" onclick="sayfa(9, this)">🖼️ Arka Planlar</button>
-    <button class="nav-btn" onclick="sayfa(10, this)">🎵 Müzik Listesi</button>
-
-    <div class="nav-label">SOSYAL & EĞLENCE</div>
-    <button class="nav-btn" onclick="sayfa(11, this)">🎮 Mini Oyun</button>
-    <button class="nav-btn" onclick="sayfa(12, this)">💬 Ekip Sohbet</button>
-    <button class="nav-btn" onclick="sayfa(13, this)">📩 Ekibe Katıl</button>
-    <button class="nav-btn" onclick="sayfa(14, this)">📞 İletişim (TikTok)</button>
-    
-    <button class="nav-btn" style="border: 1px dashed var(--p); margin-top:20px; color:var(--p);" onclick="yonetimGiris()">⚙️ YÖNETİM PANELİ</button>
+    <button class="nav-btn" onclick="sayfa(2, this)">👥 Üyeler</button>
+    <button class="nav-btn" onclick="sayfa(3, this)">🛣️ Seferler & Rotalar</button>
+    <button class="nav-btn" onclick="sayfa(10, this)">🎮 Mini Oyun</button>
+    <button class="nav-btn" onclick="sayfa(12, this)">📩 Ekibe Katıl</button>
+    <button class="nav-btn" style="color:var(--p); border:1px dashed var(--p); margin-top:20px;" onclick="yonetimGiris()">⚙️ YÖNETİM & SOHBET</button>
 </div>
 
 <div class="main">
     <div id="p1" class="panel aktif">
+        <img id="main-afis" class="hero-banner" src="">
         <h1>🚛 AKKUŞLAR SEYAHAT TERMİNALİ</h1>
-        <p>Kurucu: 乂✯ҠƐꝈƐβƐҠ✯乂</p>
+        <p>Hükümdar: 乂✯ҠƐꝈƐβƐҠ✯乂</p>
         <div class="grid">
-            <div class="card"><h3>9</h3><p>Kaptan</p></div>
-            <div class="card"><h3>V33</h3><p>Son Sürüm</p></div>
+            <div class="card"><h3 id="u-count">0</h3><p>Kayıtlı Üye</p></div>
+            <div class="card"><h3>AKTİF</h3><p>Sefer Durumu</p></div>
         </div>
     </div>
-
-    <div id="p2" class="panel"><h1>👥 Kayıtlı Üyeler</h1><div id="list-ekip" class="grid"></div></div>
 
     <div id="p3" class="panel">
-        <h1>🛣️ Konvoy Takvimi</h1>
-        <div class="card">
-            <p><b>Rota:</b> Bartın ➔ Denizli</p>
-            <p><b>Saat:</b> Her Cumartesi 21:00</p>
-            <p><b>Sunucu:</b> Simulation 1</p>
+        <h1>🛣️ Güncel Sefer Rotaları</h1>
+        <div class="grid">
+            <div class="card"><h3>İSTANBUL ➔ DENİZLİ</h3><p>Durum: Açık</p></div>
+            <div class="card"><h3>ANKARA ➔ HATAY</h3><p>Durum: Açık</p></div>
+            <div class="card"><h3>BARTIN ➔ DENİZLİ</h3><p>Durum: Açık</p></div>
+            <div class="card"><h3>HATAY ➔ İSTANBUL</h3><p>Durum: Açık</p></div>
         </div>
     </div>
 
-    <div id="p5" class="panel"><h1>🎞️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
-    <div id="p6" class="panel"><h1>🎥 Videolar</h1><div id="list-video" class="grid"></div></div>
-    <div id="p7" class="panel"><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
-    <div id="p8" class="panel"><h1>🎨 Kaplamalar</h1><div id="list-kaplama" class="grid"></div></div>
-    <div id="p9" class="panel"><h1>🖼️ Arka Planlar</h1><div id="list-bg" class="grid"></div></div>
-    <div id="p10" class="panel"><h1>🎵 Müzikler</h1><div id="list-muzik" class="grid"></div></div>
-
-    <div id="p11" class="panel">
-        <h1>🎮 Tır Park Etme (Mini Oyun)</h1>
-        <div class="card"><p>Çok Yakında! Kodlar Hazırlanıyor...</p></div>
-    </div>
-
-    <div id="p14" class="panel">
-        <h1>📞 Resmi İletişim Kanalları</h1>
-        <div class="grid">
-            <div class="card"><h3>TikTok - Kelebek</h3><a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" class="action-btn" style="text-decoration:none; display:block;">GİT</a></div>
-            <div class="card"><h3>TikTok - Akkuş Ailesi</h3><a href="https://www.tiktok.com/@akkusailesi20" target="_blank" class="action-btn" style="text-decoration:none; display:block;">GİT</a></div>
+    <div id="p10" class="panel">
+        <h1>🎮 Tır Sürme Simülatörü</h1>
+        <div id="game-area">
+            <p>Ok tuşlarıyla Akkuşlar Tırını kontrol et!</p>
+            <canvas id="gameCanvas" width="600" height="300"></canvas>
         </div>
     </div>
 
-    <div id="p15" class="panel">
-        <h1>⚙️ YÖNETİM MERKEZİ</h1>
+    <div id="p12" class="panel">
+        <h1>📩 Ekibimize Katılın</h1>
+        <div class="card" style="max-width:600px; margin:auto;">
+            <h3>Kaptan Başvurusu</h3>
+            <p>Akkuşlar Seyahat ailesinin bir parçası olmak için TikTok üzerinden bize ulaşın.</p>
+            <p style="color:var(--gold);">Şartlar: Saygı, Sadakat ve Aktiflik.</p>
+            <a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" class="action-btn" style="text-decoration:none; display:block;">TIKTOK'TAN MESAJ AT</a>
+        </div>
+    </div>
+
+    <div id="p13" class="panel">
+        <h1>⚙️ YÖNETİM MERKEZİ & SOHBET</h1>
         <div class="grid">
-            <div class="card" id="kurucu-box" style="display:none; border:2px solid var(--gold);">
-                <span class="badge badge-kurucu">Kurucu Yetkisi</span>
-                <h3>Üye Yönetimi</h3>
-                <input type="text" id="e-ad" placeholder="İsim...">
-                <select id="e-rol"><option value="uye">Üye</option><option value="admin">Yönetici</option></select>
-                <button class="action-btn" onclick="ekipEkle()">KAYDET</button>
+            <div class="card" id="kurucu-ozel" style="display:none; border:2px solid var(--gold);">
+                <h3>👑 Kurucu: Afiş Yönetimi</h3>
+                <input type="text" id="afis-link" placeholder="Resim URL yapıştır...">
+                <button class="action-btn" onclick="afisSet()" style="background:var(--gold); color:#000;">ANA RESMİ GÜNCELLE</button>
+                <hr style="border:1px solid #333; margin:15px 0;">
+                <input type="text" id="uye-ad" placeholder="Üye Adı...">
+                <button class="action-btn" onclick="uyeEkle()">ÜYEYİ KAYDET</button>
             </div>
             <div class="card">
-                <span class="badge badge-admin">İçerik Editörü</span>
-                <h3>İçerik Ekle</h3>
-                <select id="i-tip">
-                    <option value="galeri">Resim</option>
-                    <option value="video">Video</option>
-                    <option value="mod">Mod</option>
-                    <option value="kaplama">Kaplama</option>
-                    <option value="bg">Arka Plan</option>
-                    <option value="muzik">Müzik</option>
-                </select>
-                <input type="text" id="i-baslik" placeholder="Başlık...">
-                <input type="text" id="i-url" placeholder="URL Link...">
-                <button class="action-btn" onclick="icerikEkle()">YAYINLA</button>
+                <h3>💬 Admin Sohbet Odası</h3>
+                <div id="chat-box" class="chat-area"></div>
+                <input type="text" id="chat-input" placeholder="Mesajınız...">
+                <button class="action-btn" onclick="mesajGonder()">GÖNDER</button>
             </div>
         </div>
     </div>
@@ -158,58 +127,78 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    let yetki = "uye";
+    let aktifRol = "uye";
 
     function yonetimGiris() {
-        let s = prompt("Şifre:");
+        let s = prompt("Yetkili Şifresi:");
         if(s === "1907akkus") {
-            yetki = "kurucu";
+            aktifRol = "kurucu";
             document.getElementById('app-body').classList.add('kurucu-modu');
-            document.getElementById('kurucu-box').style.display = "block";
-            sayfa(15);
+            document.getElementById('kurucu-ozel').style.display = "block";
+            sayfa(13);
         } else if(s === "akkus123") {
-            yetki = "admin";
-            sayfa(15);
-        } else { alert("Hatalı!"); }
+            aktifRol = "admin";
+            sayfa(13);
+        }
     }
 
     function sayfa(n, btn) {
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('aktif'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-btn'));
-        const target = document.getElementById('p' + n);
-        if(target) target.classList.add('aktif');
+        document.getElementById('p' + n).classList.add('aktif');
         if(btn) btn.classList.add('active-btn');
+        if(n === 10) initGame();
     }
 
-    db.collection("ekip").onSnapshot(s => {
-        document.getElementById('list-ekip').innerHTML = s.docs.map(d => `
-            <div class="card">
-                <span class="badge badge-${d.data().rol}">${d.data().rol}</span><br>
-                <b>${d.data().ad}</b><br>
-                <button class="del-btn" onclick="sil('ekip','${d.id}')">ÜYEYİ SİL</button>
-            </div>
-        `).join('');
+    // ANA SAYFA AFİŞ SİSTEMİ
+    db.collection("ayarlar").doc("afis").onSnapshot(d => {
+        if(d.exists && d.data().url) {
+            const img = document.getElementById('main-afis');
+            img.src = d.data().url; img.style.display = "block";
+        }
     });
 
-    db.collection("icerik").onSnapshot(s => {
-        const data = s.docs.map(d => ({id: d.id, ...d.data()}));
-        const r = (t, id) => {
-            const el = document.getElementById(id);
-            if(el) el.innerHTML = data.filter(i => i.tip === t).map(i => `
-                <div class="card">
-                    ${i.url.includes('http') ? `<img src="${i.url}">` : ''}<br>
-                    <b>${i.i_baslik}</b><br>
-                    <button class="del-btn" onclick="sil('icerik','${i.id}')">İÇERİĞİ SİL</button>
-                </div>
-            `).join('');
+    function afisSet() {
+        if(aktifRol === "kurucu") db.collection("ayarlar").doc("afis").set({url: document.getElementById('afis-link').value});
+    }
+
+    // SOHBET SİSTEMİ
+    db.collection("sohbet").orderBy("tarih", "desc").limit(30).onSnapshot(s => {
+        document.getElementById('chat-box').innerHTML = s.docs.map(d => `
+            <div class="chat-msg"><span class="chat-name">${d.data().kim}:</span> ${d.data().msg}</div>
+        `).reverse().join('');
+    });
+
+    function mesajGonder() {
+        let m = document.getElementById('chat-input').value;
+        if(m) {
+            db.collection("sohbet").add({ kim: aktifRol, msg: m, tarih: Date.now() });
+            document.getElementById('chat-input').value = "";
+        }
+    }
+
+    // MİNİ OYUN (TIR SÜRME)
+    function initGame() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let tx = 50, ty = 130;
+        function ciz() {
+            ctx.clearRect(0,0,600,300);
+            ctx.fillStyle = "#CC0000"; ctx.fillRect(tx, ty, 60, 30); // Çekici
+            ctx.fillStyle = "#fff"; ctx.font = "10px Arial"; ctx.fillText("AKKUŞLAR", tx+5, ty+18);
+        }
+        document.onkeydown = (e) => {
+            if(e.key === "ArrowRight") tx += 10;
+            if(e.key === "ArrowLeft") tx -= 10;
+            if(e.key === "ArrowUp") ty -= 10;
+            if(e.key === "ArrowDown") ty += 10;
+            ciz();
         };
-        r('galeri','list-galeri'); r('video','list-video'); r('mod','list-mod'); 
-        r('kaplama','list-kaplama'); r('bg','list-bg'); r('muzik','list-muzik');
-    });
+        ciz();
+    }
 
-    function ekipEkle() { if(yetki === "kurucu") db.collection("ekip").add({ad: document.getElementById('e-ad').value, rol: document.getElementById('e-rol').value}); }
-    function icerikEkle() { if(yetki !== "uye") db.collection("icerik").add({tip: document.getElementById('i-tip').value, i_baslik: document.getElementById('i-baslik').value, url: document.getElementById('i-url').value}); }
-    function sil(c, i) { if(yetki === "kurucu" && confirm("Silinsin mi?")) db.collection(c).doc(i).delete(); }
+    db.collection("ekip").onSnapshot(s => { document.getElementById('u-count').innerText = s.size; });
+    function uyeEkle() { if(aktifRol === "kurucu") db.collection("ekip").add({ad: document.getElementById('uye-ad').value, rol: 'uye'}); }
 </script>
 </body>
 </html>
