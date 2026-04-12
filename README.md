@@ -185,4 +185,13 @@
         function loop() {
             ctx.clearRect(0,0,600,400); ctx.fillStyle="#333"; ctx.fillRect(150,0,300,400);
             ctx.fillStyle="#FFF"; for(let i=0; i<10; i++) ctx.fillRect(295, ((i*60)+offset)%400, 10, 30);
-            offset+=5; ctx.fillStyle="#CC0000"; ctx.fillRect(x, 300, 50, 80); ctx
+            offset+=5; ctx.fillStyle="#CC0000"; ctx.fillRect(x, 300, 50, 80); ctx.fillStyle="#000"; ctx.fillRect(x+5, 310, 40, 20);
+            ctx.fillStyle="#FFF"; ctx.font="9px Arial"; ctx.fillText("AKKUŞLAR", x+2, 350);
+            requestAnimationFrame(loop);
+        }
+        document.onkeydown = (e) => { if(e.key==="ArrowLeft" && x>155) x-=15; if(e.key==="ArrowRight" && x<395) x+=15; };
+        loop();
+    }
+</script>
+</body>
+</html>
