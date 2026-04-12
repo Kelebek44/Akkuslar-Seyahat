@@ -3,93 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V49</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V50</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #CC0000; --bg: #0A0A0A; --card: #141414; --gold: #FFD700; }
+        :root { --p: #CC0000; --bg: #0A0A0A; --card: #141414; --gold: #FFD700; --admin: #00CCFF; }
         * { box-sizing: border-box; transition: 0.2s; }
         body { margin: 0; background: var(--bg); color: #EEE; font-family: 'Space Grotesk', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* SOL MENÜ - TÜM BUTONLAR BURADA */
         .sidebar { width: 280px; background: #000; border-right: 3px solid var(--p); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; flex-shrink: 0; }
-        .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 6px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; font-size: 13px; }
+        .logo-area { text-align: center; border-bottom: 2px solid var(--p); padding-bottom: 15px; margin-bottom: 20px; }
+        .nav-label { color: #444; font-size: 10px; font-weight: bold; text-transform: uppercase; margin: 15px 0 5px; letter-spacing: 1px; }
+        .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 6px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 10px; }
         .nav-btn:hover { background: var(--p); color: white; }
+        .active-btn { background: var(--p) !important; color: white !important; }
+
+        /* ANA EKRAN */
         .main { flex: 1; padding: 30px; overflow-y: auto; background: radial-gradient(circle at top right, #1a0000, #0A0A0A); }
         .panel { display: none; }
-        .aktif { display: block !important; }
+        .aktif { display: block !important; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* GÖRSEL ÖGELER */
+        .hero-banner { width: 100%; height: 500px; object-fit: cover; border-radius: 20px; border: 4px solid var(--p); margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; position: relative; }
         .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+
+        /* GERİ BUTONU */
+        .back-btn { background: #222; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; }
+        .back-btn:hover { background: #333; border: 1px solid var(--p); }
+
+        /* SOHBET & YILDIZ */
+        .chat-box { background: #000; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-top: 15px; text-align: left; }
+        .messages { height: 180px; overflow-y: auto; margin-bottom: 10px; font-size: 13px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .stars { color: var(--gold); font-size: 22px; cursor: pointer; margin: 10px 0; }
+
+        /* FORM ÖGELERİ */
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
         .action-btn { background: var(--p); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; text-decoration: none; display: block; }
-        .back-btn { background: #222; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-size: 12px; }
-        .chat-container { background: #000; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-top: 20px; }
-        .chat-messages { height: 150px; overflow-y: auto; border-bottom: 1px solid #222; margin-bottom: 10px; padding-bottom: 10px; text-align: left; }
-        .star-rating { color: var(--gold); font-size: 20px; margin: 10px 0; }
     </style>
 </head>
 <body id="app-body">
 
 <div class="sidebar">
-    <div style="text-align:center; border-bottom:2px solid var(--p); padding-bottom:15px; margin-bottom:15px;">
+    <div class="logo-area">
         <h2 style="color:var(--p); margin:0;">AKKUŞLAR</h2>
-        <span style="color:var(--gold); font-size:11px;">Hükümdar: 乂✯ҠƐꝈƐβƐҠ✯乂</span>
+        <span style="color:var(--gold); font-size:12px;">👑 Kurucu: 乂✯ҠƐꝈƐβƐҠ✯乂</span>
     </div>
-    <button class="nav-btn" onclick="sayfa(1)">🏠 Ana Sayfa</button>
-    <button class="nav-btn" onclick="sayfa(2)">👥 Üyeler</button>
-    <button class="nav-btn" onclick="sayfa(8)">🛠️ Atölye & Modlar</button>
-    <button class="nav-btn" onclick="sayfa(5)">🎞️ Galeri</button>
-    <button class="nav-btn" onclick="sayfa(12)">📩 Ekibe Katıl</button>
-    <button class="nav-btn" style="color:var(--p); border:1px dashed var(--p); margin-top:20px;" onclick="yonetimGiris()">⚙️ YÖNETİM</button>
+    
+    <div class="nav-label">ANA MENÜ</div>
+    <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Sayfa</button>
+    <button class="nav-btn" onclick="sayfa(2, this)">👤 Ekip Kadrosu</button>
+    <button class="nav-btn" onclick="sayfa(3, this)">🎫 Bilet Gişesi</button>
+    <button class="nav-btn" onclick="sayfa(10, this)">🎮 Akkuşlar Oyun</button>
+    
+    <div class="nav-label">ARŞİV & MODLAR</div>
+    <button class="nav-btn" onclick="sayfa(5, this)">🎞️ Galeri</button>
+    <button class="nav-btn" onclick="sayfa(8, this)">🛠️ Atölye (Modlar)</button>
+    <button class="nav-btn" onclick="sayfa(11, this)">🖼️ Arka Planlar</button>
+    
+    <div class="nav-label">SİSTEM</div>
+    <button class="nav-btn" onclick="sayfa(12, this)">📩 Ekibe Katıl</button>
+    <button class="nav-btn" style="color:var(--p); border:1px dashed var(--p); margin-top:20px;" onclick="yonetimGiris()">⚙️ YÖNETİM KATLI</button>
 </div>
 
 <div class="main">
     <div id="p1" class="panel aktif">
-        <img id="main-afis" style="width:100%; height:300px; border-radius:20px; object-fit:cover; display:none; border:2px solid var(--p); margin-bottom:20px;">
-        <h1>🚛 AKKUŞLAR TERMİNALİ</h1>
+        <img id="main-afis" class="hero-banner" style="display:none;">
+        <h1 style="font-size: 40px; color: var(--p); margin: 0;">AKKUŞLAR SEYAHAT</h1>
+        <p style="color:var(--gold);">Terminal v50 | Sosyal İmparatorluk</p>
         
-        <div class="grid">
+        <div class="grid" style="margin-top:20px;">
             <div class="card">
                 <h3>⭐ Terminal Puanı</h3>
-                <div class="star-rating" id="stars-view">⭐⭐⭐⭐⭐</div>
-                <button class="back-btn" onclick="puanVer()">PUAN VER</button>
+                <div class="stars" id="star-row" onclick="puanVer()">⭐⭐⭐⭐⭐</div>
+                <p style="font-size:12px; color:gray;">Puan vermek için tıkla</p>
             </div>
-            <div class="card">
-                <h3>👥 Üye Sohbeti</h3>
-                <div id="u-chat" class="chat-messages"></div>
-                <input type="text" id="u-msg" placeholder="Mesajınız..." style="width:70%; padding:5px; background:#000; color:#fff; border:1px solid #333;">
-                <button onclick="uMesajGonder()" style="background:var(--p); border:none; color:#fff; padding:5px; cursor:pointer;">GÖNDER</button>
+            <div class="card" style="grid-column: span 2;">
+                <h3>💬 Üye Telsizi (Sohbet)</h3>
+                <div id="u-chat-list" class="messages"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="u-chat-in" placeholder="Bir mesaj bırakın...">
+                    <button onclick="uMesajGonder()" style="background:var(--p); border:none; border-radius:8px; padding:0 20px; color:white; cursor:pointer;">GÖNDER</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="p2" class="panel"><button class="back-btn" onclick="sayfa(1)">⬅ GERİ DÖN</button><h1>👥 Ekip Kadrosu</h1><div id="list-ekip" class="grid"></div></div>
+    <div id="p2" class="panel">
+        <button class="back-btn" onclick="sayfa(1)">⬅ ANA SAYFAYA DÖN</button>
+        <h1>👥 Ekip Kadrosu</h1>
+        <div id="list-ekip" class="grid"></div>
+    </div>
+
+    <div id="p3" class="panel">
+        <button class="back-btn" onclick="sayfa(1)">⬅ ANA SAYFAYA DÖN</button>
+        <h1>🎫 Bilet Gişesi</h1>
+        <div class="grid">
+            <div class="card">
+                <input type="text" id="b-ad" placeholder="Yolcu Adı...">
+                <button class="action-btn" onclick="biletKes()">BİLETİ KES</button>
+            </div>
+            <div class="card" style="text-align:left;"><div id="list-bilet"></div></div>
+        </div>
+    </div>
 
     <div id="p8" class="panel">
-        <button class="back-btn" onclick="sayfa(1)">⬅ GERİ DÖN</button>
+        <button class="back-btn" onclick="sayfa(1)">⬅ ANA SAYFAYA DÖN</button>
         <h1>🛠️ Modlar & Kaplamalar</h1>
         <div id="list-icerik" class="grid"></div>
     </div>
 
-    <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">⬅ GERİ DÖN</button><h1>🎞️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
+    <div id="p5" class="panel">
+        <button class="back-btn" onclick="sayfa(1)">⬅ ANA SAYFAYA DÖN</button>
+        <h1>🎞️ Galeri</h1>
+        <div id="list-galeri" class="grid"></div>
+    </div>
 
     <div id="p13" class="panel">
-        <h1>⚙️ YÖNETİM</h1>
+        <h1>⚙️ YÖNETİM VE YETKİ</h1>
         <div class="grid">
-            <div id="k-panel" class="card" style="display:none; border:2px solid var(--gold);">
-                <h3>👑 Kurucu Paneli</h3>
-                <input type="text" id="af-url" placeholder="Afiş Linki...">
-                <button class="action-btn" onclick="afisSet()">AFİŞİ BAS</button>
+            <div id="p-kurucu" class="card" style="display:none; border:2px solid var(--gold);">
+                <span style="color:var(--gold); font-weight:bold;">👑 KURUCU ÖZEL</span><hr>
+                <input type="text" id="af-url" placeholder="Afiş Resim Linki...">
+                <button class="action-btn" onclick="afisSet()">ANA RESMİ GÜNCELLE</button>
                 <hr>
                 <input type="text" id="r-ad" placeholder="Üye Adı...">
-                <button class="action-btn" onclick="uyeEkle()">KAYDET</button>
+                <button class="action-btn" onclick="uyeKaydet()">EKİBE EKLE</button>
             </div>
-            <div class="card">
-                <h3>🛠️ İçerik Yükle</h3>
-                <select id="i-tip"><option value="mod">Mod/Kaplama</option><option value="galeri">Resim</option></select>
+            <div id="p-editor" class="card" style="display:none;">
+                <h3>🛠️ İçerik & Mod Yükle</h3>
+                <select id="i-tip"><option value="mod">Mod/Kaplama</option><option value="galeri">Galeri Resmi</option></select>
                 <input type="text" id="i-bas" placeholder="Başlık...">
-                <input type="text" id="i-url" placeholder="Görsel URL...">
-                <input type="text" id="i-indir" placeholder="İndirme Linki (Opsiyonel)...">
-                <button class="action-btn" onclick="icerikEkle()">YAYINLA</button>
+                <input type="text" id="i-url" placeholder="Resim URL...">
+                <input type="text" id="i-indir" placeholder="İndirme Linki (Varsa)...">
+                <button class="action-btn" onclick="icerikEkle()">PAYLAŞ</button>
             </div>
         </div>
     </div>
@@ -106,19 +157,62 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    let rol = "uye";
+    let aktifRol = "uye";
 
     function yonetimGiris() {
-        let s = prompt("Şifre:");
-        if(s === "1907akkus") { rol="kurucu"; document.getElementById('k-panel').style.display="block"; sayfa(13); }
-        else if(s === "admin123") { rol="admin"; sayfa(13); }
+        let s = prompt("Sistem Şifresi:");
+        if(s === "1907akkus") {
+            aktifRol = "kurucu";
+            document.getElementById('p-kurucu').style.display = "block";
+            document.getElementById('p-editor').style.display = "block";
+            sayfa(13);
+        } else if(s === "admin123") {
+            aktifRol = "admin";
+            document.getElementById('p-editor').style.display = "block";
+            sayfa(13);
+        }
     }
 
-    function sayfa(n) {
+    function sayfa(n, btn) {
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('aktif'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-btn'));
         document.getElementById('p' + n).classList.add('aktif');
+        if(btn) btn.classList.add('active-btn');
     }
 
     // ÜYE SOHBETİ
-    db.collection("u-sohbet").orderBy("tarih","desc").limit(20).onSnapshot(s => {
-        document.getElementById('u-chat').innerHTML = s.docs.map(d => `<div style="
+    db.collection("sohbet-uye").orderBy("tarih","desc").limit(20).onSnapshot(s => {
+        document.getElementById('u-chat-list').innerHTML = s.docs.map(d => `<div style="margin-bottom:5px;"><b style="color:var(--p)">Kaptan:</b> ${d.data().msg}</div>`).reverse().join('');
+    });
+    function uMesajGonder() {
+        let m = document.getElementById('u-chat-in').value;
+        if(m) db.collection("sohbet-uye").add({msg: m, tarih: Date.now()});
+        document.getElementById('u-chat-in').value = "";
+    }
+
+    // İÇERİK & MOD LİSTELEME
+    db.collection("icerik").onSnapshot(s => {
+        const data = s.docs.map(d => ({id: d.id, ...d.data()}));
+        document.getElementById('list-icerik').innerHTML = data.filter(i => i.tip === 'mod').map(i => `
+            <div class="card">
+                <img src="${i.url}"><b>${i.bas}</b><br>
+                ${i.indir ? `<a href="${i.indir}" target="_blank" class="action-btn" style="background:green; margin-top:10px;">DOSYAYI İNDİR</a>` : ''}
+            </div>`).join('');
+        document.getElementById('list-galeri').innerHTML = data.filter(i => i.tip === 'galeri').map(i => `
+            <div class="card"><img src="${i.url}"><b>${i.bas}</b></div>`).join('');
+    });
+
+    // ANA SİSTEM ÇALIŞMALARI
+    db.collection("ekip").onSnapshot(s => {
+        document.getElementById('list-ekip').innerHTML = s.docs.map(d => `<div class="card"><b>👤 ${d.data().ad}</b></div>`).join('');
+    });
+    db.collection("ayarlar").doc("afis").onSnapshot(d => { if(d.exists) { document.getElementById('main-afis').src = d.data().url; document.getElementById('main-afis').style.display = "block"; }});
+    
+    function icerikEkle() { db.collection("icerik").add({tip: document.getElementById('i-tip').value, bas: document.getElementById('i-bas').value, url: document.getElementById('i-url').value, indir: document.getElementById('i-indir').value}); }
+    function afisSet() { if(aktifRol === "kurucu") db.collection("ayarlar").doc("afis").set({url: document.getElementById('af-url').value}); }
+    function biletKes() { db.collection("biletler").add({ad: document.getElementById('b-ad').value, tarih: Date.now()}); }
+    db.collection("biletler").onSnapshot(s => { document.getElementById('list-bilet').innerHTML = s.docs.map(d => `<div>🎫 ${d.data().ad}</div>`).join(''); });
+    function puanVer() { alert("Puanınız Kurucuya İletildi! ⭐⭐⭐⭐⭐"); }
+</script>
+</body>
+</html>
