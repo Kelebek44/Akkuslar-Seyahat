@@ -150,7 +150,7 @@
     function sayfa(n, btn) {
         if(n === 12 && aktifRol === "uye") {
             let s = prompt("🛡️ Yönetim Telsizi Şifresi:");
-            if(s !== "akkuslar7/24") { alert("Hatalı Şifre!"); return; }
+            if(s !== "akkuslar") { alert("Hatalı Şifre!"); return; }
         }
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('aktif'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-btn'));
