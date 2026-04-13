@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V85</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V86</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -18,22 +18,22 @@
         .main { flex: 1; padding: 40px; overflow-y: auto; background: rgba(0,0,0,0.6); z-index: 5; }
         .panel { display: none; }
         .aktif { display: block !important; }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; margin-bottom: 20px; backdrop-filter: blur(10px); text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         .badge { padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
         .b-kurucu { background: var(--gold); color: #000; }
         .b-admin { background: var(--admin); color: #000; }
         .b-yonetici { background: var(--yon); color: #fff; }
-        .kurucu-only, .admin-only, .yonetici-only, .editor-only { display: none; }
+        .kurucu-only, .editor-only { display: none; }
         .kurucu-mode .kurucu-only, .kurucu-mode .editor-only { display: block !important; }
-        .admin-mode .admin-only, .admin-mode .editor-only { display: block !important; }
-        .yonetici-mode .yonetici-only, .yonetici-mode .editor-only { display: block !important; }
+        .admin-mode .editor-only, .yonetici-mode .editor-only { display: block !important; }
         .del-btn { background: #800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; width: 100%; }
         .kurucu-mode .del-btn { display: block !important; }
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
         .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
         .back-btn { background: #222; color: #fff; padding: 10px; border-radius: 5px; border: 1px solid #444; cursor: pointer; margin-bottom: 20px; }
-        .resim-cerceve { width: 100%; border-radius: 10px; border: 2px solid #333; margin-bottom: 10px; object-fit: cover; height: 180px; }
+        /* RESİM ÇERÇEVESİ HATASIZ */
+        .img-fix { width: 100%; border-radius: 8px; height: 180px; object-fit: cover; border: 1px solid #444; margin-bottom: 10px; }
     </style>
 </head>
 <body id="app-body">
@@ -61,8 +61,8 @@
 <div class="main">
     <div id="p1" class="panel aktif">
         <div class="grid">
-            <div class="card" style="text-align:center;"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p)">0</h1></div>
-            <div class="card" style="text-align:center;"><h3>Yönetim</h3><h1 id="count-yon" style="color:var(--gold)">0</h1></div>
+            <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p)">0</h1></div>
+            <div class="card"><h3>Yönetim</h3><h1 id="count-yon" style="color:var(--gold)">0</h1></div>
         </div>
         <div class="card">
             <h3>📢 Ekip Telsizi</h3>
@@ -79,13 +79,13 @@
     <div id="p3" class="panel"><button class="back-btn" onclick="sayfa(1)">🏠 Geri Dön</button><h1>🛡️ Yönetim Kadrosu</h1><div id="list-yon-adlari" class="grid"></div></div>
     <div id="p8" class="panel"><button class="back-btn" onclick="sayfa(1)">🏠 Geri Dön</button><h1>🖼️ Galeri & Kaplamalar</h1><div id="list-galeri" class="grid"></div></div>
     <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🏠 Geri Dön</button><h1>🛠️ Modlar & Müzikler</h1><div id="list-mod" class="grid"></div></div>
-    
+
     <div id="p13" class="panel">
         <button class="back-btn" onclick="sayfa(1)">🏠 Geri Dön</button>
         <h1>⚙️ YÖNETİM MERKEZİ</h1>
         <div class="grid">
             <div class="card editor-only">
-                <h3>DOSYA EKLE (URL)</h3>
+                <h3>İÇERİK EKLE (URL)</h3>
                 <select id="i-tip"><option value="galeri">Galeri / Kaplama</option><option value="mod">Mod / Müzik</option></select>
                 <input type="text" id="i-bas" placeholder="Başlık">
                 <input type="text" id="i-url" placeholder="URL Linki">
@@ -94,7 +94,7 @@
             <div class="card kurucu-only">
                 <h3>🖼️ ANA EKRAN RESMİ</h3>
                 <input type="text" id="bg-url" placeholder="Arka Plan URL">
-                <button class="action-btn" onclick="setBg()">AYARLA</button>
+                <button class="action-btn" onclick="setBg()">ARKA PLANI AYARLA</button>
             </div>
             <div class="card editor-only"><h3>📥 BAŞVURULAR</h3><div id="list-basvuru"></div></div>
             <div class="card kurucu-only"><h3>👑 ROL VER</h3><input type="text" id="r-ad" placeholder="İsim"><select id="r-rol"><option value="admin">Admin</option><option value="yonetici">Yönetici</option><option value="uye">Üye</option></select><button class="action-btn" onclick="rolVer()">KAYDET</button></div>
@@ -150,7 +150,7 @@
         let u=0, y=0, uHtml="", yHtml="";
         s.docs.forEach(d => {
             const dt = d.data();
-            const h = `<div class="card" style="text-align:center;"><span class="badge b-${dt.rol}">${dt.rol.toUpperCase()}</span><br><b>${dt.ad}</b><button class="del-btn" onclick="sil('ekip','${d.id}')">KADRODAN AT</button></div>`;
+            const h = `<div class="card"><span class="badge b-${dt.rol}">${dt.rol.toUpperCase()}</span><br><b>${dt.ad}</b><button class="del-btn" onclick="sil('ekip','${d.id}')">KADRODAN AT</button></div>`;
             if(dt.rol==='uye') { u++; uHtml+=h; } else { y++; yHtml+=h; }
         });
         document.getElementById('count-uye').innerText = u;
@@ -163,7 +163,8 @@
         let g="", m="";
         s.docs.forEach(d => {
             const dt = d.data();
-            const h = `<div class="card"><img src="${dt.url}" class="resim-cerceve" onerror="this.src='https://via.placeholder.com/300x150?text=Link+Hatali'"><br><b>${dt.bas}</b><br><button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`;
+            // BURASI HATALIYDI, DÜZELTİLDİ:
+            const h = `<div class="card"><img src="${dt.url}" class="img-fix"><br><b>${dt.bas}</b><br><button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`;
             dt.tip==='galeri'? g+=h : m+=h;
         });
         document.getElementById('list-galeri').innerHTML = g;
@@ -180,8 +181,8 @@
     db.collection("sohbet_yon").orderBy("tarih","desc").limit(15).onSnapshot(s => { document.getElementById('msg-list-yon').innerHTML = s.docs.map(d => `<div style="color:var(--gold)"><b>[YÖN] ${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
 
     function rolVer() { db.collection("ekip").add({ad: document.getElementById('r-ad').value, rol: document.getElementById('r-rol').value}); }
-    function basvur() { db.collection("basvurular").add({ad: document.getElementById('k-ad').value}); alert("İletildi!"); }
-    db.collection("basvurular").onSnapshot(s => { if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} <button class="action-btn" style="width:auto; padding:5px;" onclick="sil('basvurular','${d.id}')">ONAYLA/SİL</button></div>`).join(''); });
+    function basvur() { db.collection("basvurular").add({ad: document.getElementById('k-ad').value}); alert("Başvuru İletildi!"); }
+    db.collection("basvurular").onSnapshot(s => { if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} <button class="action-btn" style="width:auto; padding:5px;" onclick="sil('basvurular','${d.id}')">ONAYLA</button></div>`).join(''); });
     function sil(c, id) { if(confirm("Kaptan, silinsin mi?")) db.collection(c).doc(id).delete(); }
 </script>
 </body>
