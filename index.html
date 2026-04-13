@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V102</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V103</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -30,12 +30,11 @@
         .admin-mode .editor-only, .yonetici-mode .editor-only { display: block !important; }
         .del-btn { background: #800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; width: 100%; font-weight: bold; }
         .kurucu-mode .del-btn { display: block !important; }
-        .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
+        .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; text-decoration: none; display: block; }
+        .back-btn { background: #222; color: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 11px; }
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
-        
-        /* CANLI YAYIN BUTONU */
         .live-btn { background: linear-gradient(90deg, #ff0050, #00f2ea); color: #000; font-weight: bold; padding: 18px; border-radius: 12px; margin-bottom: 25px; display: none; text-align: center; text-decoration: none; animation: pulse 1.5s infinite; border: 2px solid white; width: 100%; cursor: pointer; font-size: 16px; }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 80, 0.7); } 70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(255, 0, 80, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 80, 0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body id="app-body">
@@ -64,12 +63,12 @@
 </div>
 
 <div class="main">
-    <a id="live-banner" href="#" target="_blank" class="live-btn">🔴 KAPTAN YAYINDA! TIKLA VE KATIL!</a>
+    <a id="live-banner" href="#" target="_blank" class="live-btn">🔴 KAPTAN YAYINDA!</a>
 
     <div id="p1" class="panel aktif">
-        <div class="card" style="border: 2px solid var(--gold); background: rgba(255, 215, 0, 0.05);">
-            <h3 style="margin:0; color:var(--gold); letter-spacing: 2px;">📍 GÜNCEL GÜZERGAH</h3>
-            <h1 id="txt-guzergah" style="margin:10px 0; font-family:'Space Grotesk'; color: white; text-transform: uppercase;">VERİ ÇEKİLİYOR...</h1>
+        <div class="card" style="border: 2px solid var(--gold);">
+            <h3 style="margin:0; color:var(--gold);">📍 GÜNCEL GÜZERGAH</h3>
+            <h1 id="txt-guzergah" style="margin:10px 0; font-family:'Space Grotesk';">GÜZERGAH BEKLENİYOR...</h1>
         </div>
         <div class="grid">
             <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p); margin:0;">0</h1></div>
@@ -81,7 +80,7 @@
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <input type="text" id="nick-uye" placeholder="İsim" style="width:20%;">
                 <input type="text" id="msg-uye" placeholder="Mesaj..." style="width:80%;">
-                <button onclick="mesajGonder('sohbet_uye', 'nick-uye', 'msg-uye')" class="action-btn" style="width:100px;">GÖNDER</button>
+                <button onclick="mesajGonder('sohbet_uye', 'nick-uye', 'msg-uye')" class="action-btn" style="width:100px; padding: 12px;">GÖNDER</button>
             </div>
         </div>
     </div>
@@ -91,21 +90,33 @@
         <h1>⚙️ YÖNETİM & OPERASYON</h1>
         <div class="grid">
             <div class="card editor-only" style="border: 2px solid var(--admin);">
-                <h3>🎥 YAYINCI VE GÜZERGAH AYARI</h3>
-                <input type="text" id="inp-guzergah" placeholder="Güzergah Yazın">
-                <button class="action-btn" style="background:var(--gold); color:black;" onclick="setGuzergah()">GÜZERGAHI GÜNCELLE</button>
+                <h3>🎥 CANLI YAYIN & ROTA</h3>
+                <input type="text" id="inp-guzergah" placeholder="Yeni Güzergah">
+                <button class="action-btn" style="background:var(--gold); color:black;" onclick="setGuzergah()">ROTAYI GÜNCELLE</button>
                 <hr style="border:1px solid #333; margin:15px 0;">
-                <input type="text" id="inp-kaptan" placeholder="Yayın Yapan Kaptan Adı">
-                <input type="text" id="inp-live-link" placeholder="TikTok Linki">
-                <select id="live-status">
-                    <option value="0">Yayın Kapalı</option>
-                    <option value="1">Yayın Başladı</option>
-                </select>
+                <input type="text" id="inp-kaptan" placeholder="Yayıncı Kaptan İsmi">
+                <input type="text" id="inp-live-link" placeholder="TikTok Canlı Yayın Linki">
+                <select id="live-status"><option value="0">Yayın Kapalı</option><option value="1">Yayın Açık</option></select>
                 <button class="action-btn" onclick="setLive()">YAYINI BAŞLAT / BİTİR</button>
             </div>
-            <div class="card editor-only"><h3>📥 BAŞVURULAR</h3><div id="list-basvuru"></div></div>
-            <div class="card editor-only"><h3>📁 DOSYA EKLE</h3><select id="i-tip"><option value="galeri">Galeri</option><option value="mod">Mod</option></select><input type="text" id="i-bas" placeholder="Başlık"><input type="text" id="i-url" placeholder="URL"><button class="action-btn" onclick="urlIleYukle()">EKLE</button></div>
+            <div class="card editor-only"><h3>📥 BAŞVURU ONAYLARI</h3><div id="list-basvuru"></div></div>
+            <div class="card editor-only"><h3>📁 DOSYA EKLE</h3><select id="i-tip"><option value="galeri">Galeri</option><option value="mod">Mod</option></select><input type="text" id="i-bas" placeholder="Başlık"><input type="text" id="i-url" placeholder="URL Link"><button class="action-btn" onclick="urlIleYukle()">EKLE</button></div>
             <div class="card kurucu-only"><h3>👑 ROL VER</h3><input type="text" id="r-ad" placeholder="İsim"><select id="r-rol"><option value="admin">Admin</option><option value="yonetici">Yönetici</option><option value="uye">Üye</option></select><button class="action-btn" onclick="rolVer()">KAYDET</button></div>
+        </div>
+    </div>
+
+    <div id="p15" class="panel">
+        <button class="back-btn" onclick="sayfa(1)">🔙 Geri</button>
+        <h1>📞 TikTok Hesaplarımız</h1>
+        <div class="grid">
+            <div class="card" style="border: 2px solid #00f2ea;">
+                <h3>Kelebek Misali</h3>
+                <a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" class="action-btn" style="background:#00f2ea; color:black;">TIKLA GİT</a>
+            </div>
+            <div class="card" style="border: 2px solid #ff0050;">
+                <h3>Akkuş Ailesi</h3>
+                <a href="https://www.tiktok.com/@akkusailesi20" target="_blank" class="action-btn" style="background:#ff0050; color:white;">TIKLA GİT</a>
+            </div>
         </div>
     </div>
 
@@ -115,7 +126,6 @@
     <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
     <div id="p21" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🎫 Bilet Al</h1><div class="card"><input type="text" id="b-ad" placeholder="Ad Soyad"><input type="text" id="b-nereye" placeholder="Varış"><button class="action-btn" onclick="biletAl()">BİLET AL</button><div id="list-bilet"></div></div></div>
     <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🛡️ Telsiz</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><input type="text" id="nick-yon" placeholder="İsim"><input type="text" id="msg-yon" placeholder="Mesaj..."><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn">GÖNDER</button></div></div>
-    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>📞 İletişim</h1><div class="grid"><div class="card">TikTok: @kelebekmiisaliii</div><div class="card">TikTok: @akkusailesi20</div></div></div>
 </div>
 
 <script>
@@ -145,28 +155,27 @@
         document.getElementById('p'+n).classList.add('aktif'); if(btn) btn.classList.add('active-btn');
     }
 
-    // GÜZERGAH VE YAYIN SİSTEMİ (DÜZELTİLDİ)
+    // GÜNCELLEMELERİN ANA SAYFAYA DÜŞMESİ İÇİN KESİN ÇÖZÜM
     function setGuzergah() { 
-        const val = document.getElementById('inp-guzergah').value; 
-        db.collection("ayarlar").doc("ana-bilgi").set({guzergah: val}, {merge:true}).then(() => { alert("Güzergah Mühürlendi!"); }); 
+        const v = document.getElementById('inp-guzergah').value; 
+        db.collection("terminal").doc("guncel").set({guzergah: v}, {merge:true}).then(() => alert("Rota Yayınlandı!")); 
     }
-    
     function setLive() { 
-        const status = document.getElementById('live-status').value; 
-        const link = document.getElementById('inp-live-link').value;
-        const kaptan = document.getElementById('inp-kaptan').value;
-        db.collection("ayarlar").doc("ana-bilgi").set({yayinDurum: status, yayinLink: link, kaptanAd: kaptan}, {merge:true}).then(() => { alert("Yayın Bilgisi Güncellendi!"); }); 
+        const s = document.getElementById('live-status').value; 
+        const l = document.getElementById('inp-live-link').value;
+        const k = document.getElementById('inp-kaptan').value;
+        db.collection("terminal").doc("guncel").set({durum: s, link: l, kaptan: k}, {merge:true}).then(() => alert("Yayın Durumu Güncellendi!")); 
     }
     
-    // ANLIK İZLEME (ANA SAYFA İÇİN)
-    db.collection("ayarlar").doc("ana-bilgi").onSnapshot(doc => {
+    // ANLIK İZLEME MOTORU
+    db.collection("terminal").doc("guncel").onSnapshot(doc => {
         if(doc.exists()) {
             const d = doc.data();
             document.getElementById('txt-guzergah').innerText = d.guzergah || "HENÜZ GİRİLMEDİ";
             const banner = document.getElementById('live-banner');
-            if(d.yayinDurum == "1") {
-                banner.innerText = `🔴 KAPTAN ${d.kaptanAd || "BİRİ"} YAYINDA! KATILMAK İÇİN TIKLA!`;
-                banner.href = d.yayinLink || "#";
+            if(d.durum == "1") {
+                banner.innerText = `🔴 KAPTAN ${d.kaptan || "BİRİ"} TİKTOK'TA YAYINDA!`;
+                banner.href = d.link || "#";
                 banner.style.display = "block";
             } else {
                 banner.style.display = "none";
@@ -174,13 +183,13 @@
         }
     });
 
-    // TEMEL SİSTEMLER
+    // EKİP & İÇERİK
     db.collection("ekip").onSnapshot(s => {
         let u=0, y=0, uH="", yH="";
         s.docs.forEach(d => {
             const dt = d.data();
             const h = `<div class="card"><span class="badge b-${dt.rol}">${dt.rol.toUpperCase()}</span><br><b>${dt.ad}</b><button class="del-btn" onclick="sil('ekip','${d.id}')">SİL</button></div>`;
-            if(dt.rol==='uye') { u++; uH+=h; } else { y++; yH+=h; }
+            dt.rol==='uye' ? (u++, uH+=h) : (y++, yH+=h);
         });
         document.getElementById('count-uye').innerText = u; document.getElementById('count-yon').innerText = y;
         document.getElementById('list-uye-adlari').innerHTML = uH; document.getElementById('list-yon-adlari').innerHTML = yH;
@@ -193,7 +202,19 @@
     db.collection("sohbet_uye").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-uye').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
     db.collection("sohbet_yon").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-yon').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
     async function urlIleYukle() { const t=document.getElementById('i-tip').value, b=document.getElementById('i-bas').value, u=document.getElementById('i-url').value; await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); alert("Eklendi!"); }
-    db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => { let g="", m=""; s.docs.forEach(d => { const dt=d.data(); const h=`<div class="card"><img src="${dt.url}" style="width:100%"><br><b>${dt.bas}</b><button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`; if(dt.tip==='galeri') g+=h; else m+=h; }); document.getElementById('list-galeri').innerHTML=g; document.getElementById('list-mod').innerHTML=m; });
+    
+    // MODLAR ESKİ HALİNE DÖNDÜRÜLDÜ
+    db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => {
+        let g="", m="";
+        s.docs.forEach(d => {
+            const dt = d.data();
+            const dBtn = `<a href="${dt.url}" target="_blank" style="background:#28a745; color:white; padding:8px; display:block; text-decoration:none; margin-top:10px; border-radius:5px; font-weight:bold;">📥 İNDİR</a>`;
+            const h = `<div class="card"><img src="${dt.url}" style="width:100%; border-radius:8px; height:180px; object-fit:cover;"><br><b>${dt.bas}</b>${dt.tip==='mod' ? dBtn : ''}<button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`;
+            dt.tip==='galeri' ? g+=h : m+=h;
+        });
+        document.getElementById('list-galeri').innerHTML = g;
+        document.getElementById('list-mod').innerHTML = m;
+    });
 </script>
 </body>
 </html>
