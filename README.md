@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V90</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V91</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -13,11 +13,13 @@
         body { margin: 0; background: var(--bg); color: #EEE; display: flex; height: 100vh; overflow: hidden; background-size: cover !important; background-position: center !important; }
         
         /* SOL SİDEBAR */
-        .sidebar { width: 290px; background: rgba(0,0,0,0.98); border-right: 2px solid var(--p); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; flex-shrink: 0; z-index: 10; }
+        .sidebar { width: 300px; background: rgba(0,0,0,0.98); border-right: 2px solid var(--p); display: flex; flex-direction: column; padding: 20px; overflow-y: auto; flex-shrink: 0; z-index: 10; }
         
         /* LOGO ALANI (ÖZEL TASARIM) */
         .logo-area { text-align: center; border-bottom: 2px solid var(--p); padding-bottom: 15px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        #fixed-logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--p); object-fit: cover; box-shadow: 0 0 10px rgba(204,0,0,0.3); }
+        
+        /* ŞANLI KURUCU ARMASI */
+        #fixed-logo { width: 120px; height: auto; border-radius: 10px; border: 2px solid var(--p); object-fit: cover; box-shadow: 0 0 15px rgba(204,0,0,0.5); }
         
         /* NAV BUTONLARI */
         .nav-btn { background: #111; color: #AAA; padding: 12px; margin-bottom: 5px; cursor: pointer; border: none; text-align: left; width: 100%; border-radius: 8px; font-weight: bold; font-size: 11px; display: flex; align-items: center; gap: 10px; }
@@ -60,8 +62,8 @@
 <div class="sidebar">
     <div class="logo-area">
         <h2 style="color:var(--p); margin:0; font-family:'Space Grotesk'; font-size:20px;">AKKUŞLAR SEYAHAT</h2>
-        <img id="fixed-logo" src="https://i.wpfc.ml/bh/lbsj5t.jpg" alt="Logo">
-        <div style="color:var(--gold); font-size:12px; font-weight:bold;">👑 KURUCU: 乂✯ҠƐꝈƐβƐҠ✯乂</div>
+        <img id="fixed-logo" src="https://i.wpfc.ml/bh/lbsj5t.jpg" alt="Kurucu">
+        <div style="color:var(--gold); font-size:12px; font-weight:bold; letter-spacing:1px;">👑 乂✯ҠƐꝈƐβƐҠ✯乂</div>
     </div>
     <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Ekran</button>
     <button class="nav-btn" onclick="sayfa(2, this)">👥 Ekip Üyeleri</button>
@@ -86,7 +88,7 @@
         </div>
         <div class="grid">
             <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p); margin:0;">0</h1></div>
-            <div class="card"><h3>Yönetim</h3><h1 id="count-yon" style="color:var(--gold); margin:0;">0</h1></div>
+            <div class="card"><h3>Yönetim Kadrosu</h3><h1 id="count-yon" style="color:var(--gold); margin:0;">0</h1></div>
         </div>
         <div class="card">
             <h3>📢 Ekip Telsizi</h3>
@@ -125,7 +127,14 @@
         </div>
     </div>
 
-    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa'ya Dön</button><h1>📞 İletişim</h1><div class="card"><p><a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" style="color:var(--p); text-decoration:none;">TikTok 1</a></p><p><a href="https://www.tiktok.com/@akkusailesi20" target="_blank" style="color:var(--p); text-decoration:none;">TikTok 2</a></p></div></div>
+    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa'ya Dön</button><h1>📞 İletişim</h1>
+        <div class="card">
+            <h3>Tiktok Hesaplarımız</h3>
+            <p><a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" style="color:var(--p); text-decoration:none;">📱 kelebekmiisaliii</a></p>
+            <p><a href="https://www.tiktok.com/@akkusailesi20" target="_blank" style="color:var(--p); text-decoration:none;">📱 akkusailesi20</a></p>
+        </div>
+    </div>
+    
     <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa'ya Dön</button><h1>✍️ Ekibe Katıl</h1><div class="card"><input type="text" id="k-ad" placeholder="İsminiz..."><button onclick="basvur()" class="action-btn">GÖNDER</button></div></div>
     <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa'ya Dön</button><h1>🛡️ Yönetim Telsizi</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="nick-yon" placeholder="İsim" style="width:20%;"><input type="text" id="msg-yon" placeholder="Mesaj..." style="width:80%;"><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn" style="background:var(--gold); color:black; width:100px;">GÖNDER</button></div></div></div>
 </div>
@@ -176,7 +185,7 @@
     // İÇERİK EKLEME
     async function urlIleYukle() {
         const t = document.getElementById('i-tip').value;
-        const b = document.getElementById('i-bas').value;
+        const b = document.getElementById('i-bas\').value;
         const u = document.getElementById('i-url').value;
         if(!u || !b) return alert("Eksik bilgi!");
         await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()});
