@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V100</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V102</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -31,10 +31,11 @@
         .del-btn { background: #800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; width: 100%; font-weight: bold; }
         .kurucu-mode .del-btn { display: block !important; }
         .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
-        .back-btn { background: #222; color: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 11px; }
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
-        .live-banner { background: linear-gradient(90deg, #ff0050, #00f2ea); color: #000; font-weight: bold; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: none; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        
+        /* CANLI YAYIN BUTONU */
+        .live-btn { background: linear-gradient(90deg, #ff0050, #00f2ea); color: #000; font-weight: bold; padding: 18px; border-radius: 12px; margin-bottom: 25px; display: none; text-align: center; text-decoration: none; animation: pulse 1.5s infinite; border: 2px solid white; width: 100%; cursor: pointer; font-size: 16px; }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 80, 0.7); } 70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(255, 0, 80, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 80, 0); } }
     </style>
 </head>
 <body id="app-body">
@@ -48,7 +49,6 @@
     <button class="nav-btn active-btn" onclick="sayfa(1, this)">🏠 Ana Ekran</button>
     <button class="nav-btn" onclick="sayfa(2, this)">👥 Ekip Üyeleri</button>
     <button class="nav-btn" onclick="sayfa(3, this)">🛡️ Yönetim Kadrosu</button>
-    <button class="nav-btn" onclick="sayfa(4, this)">📜 Ekip Kuralları</button>
     <button class="nav-btn" onclick="sayfa(8, this)">🖼️ Galeri / Kaplama</button>
     <button class="nav-btn" onclick="sayfa(7, this)">🛠️ Modlar / Müzikler</button>
     <button class="nav-btn" onclick="sayfa(21, this)">🎫 Sanal Bilet Al</button>
@@ -64,12 +64,12 @@
 </div>
 
 <div class="main">
-    <div id="live-alert" class="live-banner">🔴 CANLI YAYIN BAŞLADI! TİKTOK'A BEKLERİZ!</div>
+    <a id="live-banner" href="#" target="_blank" class="live-btn">🔴 KAPTAN YAYINDA! TIKLA VE KATIL!</a>
 
     <div id="p1" class="panel aktif">
-        <div class="card" style="border: 2px solid var(--gold);">
-            <h3 style="margin:0; color:var(--gold);">📍 GÜNCEL GÜZERGAH</h3>
-            <h1 id="txt-guzergah" style="margin:10px 0; font-family:'Space Grotesk';">BEKLENİYOR...</h1>
+        <div class="card" style="border: 2px solid var(--gold); background: rgba(255, 215, 0, 0.05);">
+            <h3 style="margin:0; color:var(--gold); letter-spacing: 2px;">📍 GÜNCEL GÜZERGAH</h3>
+            <h1 id="txt-guzergah" style="margin:10px 0; font-family:'Space Grotesk'; color: white; text-transform: uppercase;">VERİ ÇEKİLİYOR...</h1>
         </div>
         <div class="grid">
             <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p); margin:0;">0</h1></div>
@@ -87,16 +87,21 @@
     </div>
 
     <div id="p13" class="panel">
-        <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
-        <h1>⚙️ OPERASYON MERKEZİ</h1>
+        <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfaya Dön</button>
+        <h1>⚙️ YÖNETİM & OPERASYON</h1>
         <div class="grid">
             <div class="card editor-only" style="border: 2px solid var(--admin);">
-                <h3>🎥 YAYIN & GÜZERGAH</h3>
-                <input type="text" id="inp-guzergah" placeholder="Güzergah (Örn: Denizli-Bartın)">
-                <button class="action-btn" style="background:var(--gold); color:black;" onclick="setGuzergah()">GÜZERGAHI YAYINLA</button>
+                <h3>🎥 YAYINCI VE GÜZERGAH AYARI</h3>
+                <input type="text" id="inp-guzergah" placeholder="Güzergah Yazın">
+                <button class="action-btn" style="background:var(--gold); color:black;" onclick="setGuzergah()">GÜZERGAHI GÜNCELLE</button>
                 <hr style="border:1px solid #333; margin:15px 0;">
-                <select id="live-status"><option value="0">Yayın Kapalı</option><option value="1">Yayın Başladı</option></select>
-                <button class="action-btn" onclick="setLive()">YAYIN DURUMUNU GÜNCELLE</button>
+                <input type="text" id="inp-kaptan" placeholder="Yayın Yapan Kaptan Adı">
+                <input type="text" id="inp-live-link" placeholder="TikTok Linki">
+                <select id="live-status">
+                    <option value="0">Yayın Kapalı</option>
+                    <option value="1">Yayın Başladı</option>
+                </select>
+                <button class="action-btn" onclick="setLive()">YAYINI BAŞLAT / BİTİR</button>
             </div>
             <div class="card editor-only"><h3>📥 BAŞVURULAR</h3><div id="list-basvuru"></div></div>
             <div class="card editor-only"><h3>📁 DOSYA EKLE</h3><select id="i-tip"><option value="galeri">Galeri</option><option value="mod">Mod</option></select><input type="text" id="i-bas" placeholder="Başlık"><input type="text" id="i-url" placeholder="URL"><button class="action-btn" onclick="urlIleYukle()">EKLE</button></div>
@@ -104,14 +109,13 @@
         </div>
     </div>
 
-    <div id="p2" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>👥 Ekip Üyeleri</h1><div id="list-uye-adlari" class="grid"></div></div>
-    <div id="p3" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Yönetim Kadrosu</h1><div id="list-yon-adlari" class="grid"></div></div>
-    <div id="p4" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📜 Kurallar</h1><div class="card">Saygılı olunuz.</div></div>
-    <div id="p8" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🖼️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
-    <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
-    <div id="p21" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🎫 Bilet</h1><div class="card"><input type="text" id="b-ad" placeholder="Ad"><input type="text" id="b-nereye" placeholder="Yer"><button class="action-btn" onclick="biletAl()">AL</button><div id="list-bilet"></div></div></div>
-    <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Telsiz</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><input type="text" id="nick-yon" placeholder="İsim"><input type="text" id="msg-yon" placeholder="Mesaj..."><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn">GÖNDER</button></div></div>
-    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📞 İletişim</h1><div class="grid"><div class="card">TikTok: @kelebekmiisaliii</div><div class="card">TikTok: @akkusailesi20</div></div></div>
+    <div id="p2" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>👥 Ekip Üyeleri</h1><div id="list-uye-adlari" class="grid"></div></div>
+    <div id="p3" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🛡️ Yönetim Kadrosu</h1><div id="list-yon-adlari" class="grid"></div></div>
+    <div id="p8" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🖼️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
+    <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
+    <div id="p21" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🎫 Bilet Al</h1><div class="card"><input type="text" id="b-ad" placeholder="Ad Soyad"><input type="text" id="b-nereye" placeholder="Varış"><button class="action-btn" onclick="biletAl()">BİLET AL</button><div id="list-bilet"></div></div></div>
+    <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>🛡️ Telsiz</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><input type="text" id="nick-yon" placeholder="İsim"><input type="text" id="msg-yon" placeholder="Mesaj..."><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn">GÖNDER</button></div></div>
+    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Geri</button><h1>📞 İletişim</h1><div class="grid"><div class="card">TikTok: @kelebekmiisaliii</div><div class="card">TikTok: @akkusailesi20</div></div></div>
 </div>
 
 <script>
@@ -141,18 +145,36 @@
         document.getElementById('p'+n).classList.add('aktif'); if(btn) btn.classList.add('active-btn');
     }
 
-    // GÜZERGAH VE YAYIN SİSTEMİ
-    function setGuzergah() { const val = document.getElementById('inp-guzergah').value; db.collection("ayarlar").doc("bilgi").set({guzergah: val}, {merge:true}); alert("Güzergah güncellendi!"); }
-    function setLive() { const val = document.getElementById('live-status').value; db.collection("ayarlar").doc("bilgi").set({yayin: val}, {merge:true}); alert("Yayın durumu güncellendi!"); }
+    // GÜZERGAH VE YAYIN SİSTEMİ (DÜZELTİLDİ)
+    function setGuzergah() { 
+        const val = document.getElementById('inp-guzergah').value; 
+        db.collection("ayarlar").doc("ana-bilgi").set({guzergah: val}, {merge:true}).then(() => { alert("Güzergah Mühürlendi!"); }); 
+    }
     
-    db.collection("ayarlar").doc("bilgi").onSnapshot(d => {
-        if(d.exists()) {
-            document.getElementById('txt-guzergah').innerText = d.data().guzergah || "BELİRLENMEDİ";
-            document.getElementById('live-alert').style.display = d.data().yayin == "1" ? "block" : "none";
+    function setLive() { 
+        const status = document.getElementById('live-status').value; 
+        const link = document.getElementById('inp-live-link').value;
+        const kaptan = document.getElementById('inp-kaptan').value;
+        db.collection("ayarlar").doc("ana-bilgi").set({yayinDurum: status, yayinLink: link, kaptanAd: kaptan}, {merge:true}).then(() => { alert("Yayın Bilgisi Güncellendi!"); }); 
+    }
+    
+    // ANLIK İZLEME (ANA SAYFA İÇİN)
+    db.collection("ayarlar").doc("ana-bilgi").onSnapshot(doc => {
+        if(doc.exists()) {
+            const d = doc.data();
+            document.getElementById('txt-guzergah').innerText = d.guzergah || "HENÜZ GİRİLMEDİ";
+            const banner = document.getElementById('live-banner');
+            if(d.yayinDurum == "1") {
+                banner.innerText = `🔴 KAPTAN ${d.kaptanAd || "BİRİ"} YAYINDA! KATILMAK İÇİN TIKLA!`;
+                banner.href = d.yayinLink || "#";
+                banner.style.display = "block";
+            } else {
+                banner.style.display = "none";
+            }
         }
     });
 
-    // TEMEL MOTOR
+    // TEMEL SİSTEMLER
     db.collection("ekip").onSnapshot(s => {
         let u=0, y=0, uH="", yH="";
         s.docs.forEach(d => {
@@ -166,11 +188,11 @@
 
     async function basvuruyuOnayla(id, isim) { await db.collection("ekip").add({ad: isim, rol: "uye"}); await db.collection("basvurular").doc(id).delete(); }
     db.collection("basvurular").onSnapshot(s => { if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">${d.data().ad} <button onclick="basvuruyuOnayla('${d.id}','${d.data().ad}')">ONAYLA</button></div>`).join(''); });
-    function sil(c, id) { if(aktifRol==='kurucu' && confirm("Sil?")) db.collection(c).doc(id).delete(); }
+    function sil(c, id) { if(aktifRol==='kurucu' && confirm("Silinsin mi?")) db.collection(c).doc(id).delete(); }
     function mesajGonder(c, n, m) { const ni = document.getElementById(n).value, me = document.getElementById(m).value; if(ni && me) db.collection(c).add({isim:ni, msg:me, tarih:Date.now()}); document.getElementById(m).value = ""; }
     db.collection("sohbet_uye").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-uye').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
     db.collection("sohbet_yon").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-yon').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
-    async function urlIleYukle() { const t=document.getElementById('i-tip').value, b=document.getElementById('i-bas').value, u=document.getElementById('i-url').value; await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); }
+    async function urlIleYukle() { const t=document.getElementById('i-tip').value, b=document.getElementById('i-bas').value, u=document.getElementById('i-url').value; await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); alert("Eklendi!"); }
     db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => { let g="", m=""; s.docs.forEach(d => { const dt=d.data(); const h=`<div class="card"><img src="${dt.url}" style="width:100%"><br><b>${dt.bas}</b><button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`; if(dt.tip==='galeri') g+=h; else m+=h; }); document.getElementById('list-galeri').innerHTML=g; document.getElementById('list-mod').innerHTML=m; });
 </script>
 </body>
