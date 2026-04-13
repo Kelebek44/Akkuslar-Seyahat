@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V93</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V95</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -30,13 +30,10 @@
         .admin-mode .editor-only, .yonetici-mode .editor-only { display: block !important; }
         .del-btn { background: #800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; width: 100%; font-weight: bold; }
         .kurucu-mode .del-btn, .admin-mode .del-btn { display: block !important; }
-        .download-btn { background: #28a745; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; display: block; text-decoration: none; margin-top: 10px; text-align: center; font-size: 12px; }
         .back-btn { background: #222; color: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 11px; }
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
         .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
         .img-item { width: 100%; height: 200px; border-radius: 10px; object-fit: cover; border: 1px solid #444; margin-bottom: 10px; }
-        canvas { background: #111; border: 2px solid var(--p); border-radius: 10px; display: block; margin: 0 auto; }
-        .bilet-card { background: linear-gradient(135deg, #1a1a1a, #2a0000); border: 2px dashed var(--p); color: white; padding: 15px; border-radius: 10px; text-align: left; position: relative; }
     </style>
 </head>
 <body id="app-body">
@@ -69,7 +66,7 @@
     <div id="p1" class="panel aktif">
         <div class="grid">
             <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p); margin:0;">0</h1></div>
-            <div class="card"><h3>Aktif Yolcu</h3><h1 id="count-bilet" style="color:var(--gold); margin:0;">0</h1></div>
+            <div class="card"><h3>Yönetim</h3><h1 id="count-yon" style="color:var(--gold); margin:0;">0</h1></div>
         </div>
         <div class="card">
             <h3>📢 Ekip Telsizi</h3>
@@ -82,57 +79,27 @@
         </div>
     </div>
 
-    <div id="p21" class="panel">
-        <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
-        <h1>🎫 Sanal Bilet Gişesi</h1>
-        <div class="grid">
-            <div class="card">
-                <h3>Biletini Al</h3>
-                <input type="text" id="b-ad" placeholder="Adınız Soyadınız">
-                <input type="text" id="b-nereye" placeholder="Nereye Gidiyorsunuz?">
-                <button class="action-btn" onclick="biletAl()">BİLETİ ONAYLA</button>
-            </div>
-            <div id="list-biletler" class="grid" style="grid-column: span 2;"></div>
-        </div>
-    </div>
-
     <div id="p2" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>👥 Ekip Üyeleri</h1><div id="list-uye-adlari" class="grid"></div></div>
     <div id="p3" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Yönetim Kadrosu</h1><div id="list-yon-adlari" class="grid"></div></div>
-    <div id="p4" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📜 Ekip Kuralları</h1><div class="card" style="text-align:left;">1. Kurucuya mutlak saygı.<br>2. Küfür ve saygısızlık yasaktır.<br>3. Konvoy disiplinine uyulmalıdır.</div></div>
-    <div id="p8" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🖼️ Galeri & Kaplamalar</h1><div id="list-galeri" class="grid"></div></div>
-    <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛠️ Modlar & Müzikler</h1><div id="list-mod" class="grid"></div></div>
-    
-    <div id="p20" class="panel">
-        <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
-        <h1>🎮 Mini Otobüs Oyunu</h1>
-        <div class="card"><canvas id="gameCanvas" width="400" height="400"></canvas><p>Ok tuşları ile hareket et!</p><button class="action-btn" onclick="startGame()" style="width:200px;">BAŞLAT</button></div>
-    </div>
-
     <div id="p13" class="panel">
         <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
         <h1>⚙️ YÖNETİM MERKEZİ</h1>
         <div class="grid">
+            <div class="card editor-only"><h3>📥 GELEN BAŞVURULAR</h3><div id="list-basvuru"></div></div>
             <div class="card editor-only">
-                <h3>İÇERİK EKLE (URL)</h3>
-                <select id="i-tip"><option value="galeri">Galeri / Kaplama</option><option value="mod">Mod / Müzik</option></select>
-                <input type="text" id="i-bas" placeholder="Başlık">
-                <input type="text" id="i-url" placeholder="URL Link">
-                <button class="action-btn" onclick="urlIleYukle()">EKLE</button>
+                <h3>İÇERİK EKLE</h3>
+                <select id="i-tip"><option value="galeri">Galeri</option><option value="mod">Mod</option></select>
+                <input type="text" id="i-bas" placeholder="Başlık"><input type="text" id="i-url" placeholder="URL"><button class="action-btn" onclick="urlIleYukle()">EKLE</button>
             </div>
-            <div class="card kurucu-only"><h3>🖼️ ARKA PLAN</h3><input type="text" id="bg-url" placeholder="URL"><button class="action-btn" onclick="setBg()">AYARLA</button></div>
-            <div class="card editor-only"><h3>📥 BAŞVURULAR</h3><div id="list-basvuru"></div></div>
-            <div class="card kurucu-only"><h3>👑 ROL VER</h3><input type="text" id="r-ad" placeholder="İsim"><select id="r-rol"><option value="admin">Admin</option><option value="yonetici">Yönetici</option><option value="uye">Üye</option></select><button class="action-btn" onclick="rolVer()">KAYDET</button></div>
-        </div>
-    </div>
-
-    <div id="p15" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📞 İletişim</h1>
-        <div class="card">
-            <p>TikTok 1: <a href="https://www.tiktok.com/@kelebekmiisaliii" target="_blank" style="color:var(--p)">@kelebekmiisaliii</a></p>
-            <p>TikTok 2: <a href="https://www.tiktok.com/@akkusailesi20" target="_blank" style="color:var(--p)">@akkusailesi20</a></p>
+            <div class="card kurucu-only"><h3>👑 MANUEL ROL VER</h3><input type="text" id="r-ad" placeholder="İsim"><select id="r-rol"><option value="admin">Admin</option><option value="yonetici">Yönetici</option><option value="uye">Üye</option></select><button class="action-btn" onclick="rolVer()">KAYDET</button></div>
         </div>
     </div>
     
-    <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>✍️ Ekibe Katıl</h1><div class="card"><input type="text" id="k-ad" placeholder="İsminiz..."><button onclick="basvur()" class="action-btn">GÖNDER</button></div></div>
+    <div id="p4" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📜 Ekip Kuralları</h1><div class="card">Kurallara uyunuz.</div></div>
+    <div id="p8" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🖼️ Galeri</h1><div id="list-galeri" class="grid"></div></div>
+    <div id="p7" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛠️ Modlar</h1><div id="list-mod" class="grid"></div></div>
+    <div id="p21" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🎫 Bilet Al</h1><div class="card"><input type="text" id="b-ad" placeholder="Ad"><input type="text" id="b-nereye" placeholder="Nereye"><button class="action-btn" onclick="biletAl()">BİLET AL</button></div></div>
+    <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>✍️ Ekibe Katıl</h1><div class="card"><input type="text" id="k-ad" placeholder="İsim"><button onclick="basvur()" class="action-btn">BAŞVUR</button></div></div>
     <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Yönetim Telsizi</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="nick-yon" placeholder="İsim" style="width:20%;"><input type="text" id="msg-yon" placeholder="Mesaj..." style="width:80%;"><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn" style="background:var(--gold); color:black; width:100px;">GÖNDER</button></div></div></div>
 </div>
 
@@ -157,47 +124,27 @@
     }
 
     function sayfa(n, btn) {
+        if(n === 12 && aktifRol === "uye") {
+            let s = prompt("🛡️ Yönetim Telsizi Şifresi:");
+            if(s !== "akkuslar7/24") { alert("Hatalı Şifre!"); return; }
+        }
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('aktif'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-btn'));
         document.getElementById('p'+n).classList.add('aktif');
         if(btn) btn.classList.add('active-btn');
     }
 
-    function setBg() { 
-        const url = document.getElementById('bg-url').value;
-        if(url) db.collection("ayarlar").doc("tema").set({bg: url}).then(() => alert("Güncellendi!"));
-    }
-    db.collection("ayarlar").doc("tema").onSnapshot(d => { if(d.exists()) document.body.style.backgroundImage = `url('${d.data().bg}')`; });
-
-    async function urlIleYukle() {
-        const t = document.getElementById('i-tip').value;
-        const b = document.getElementById('i-bas').value;
-        const u = document.getElementById('i-url').value;
-        if(u && b) { await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); alert("Eklendi!"); }
-    }
-
-    // BİLET SİSTEMİ
-    function biletAl() {
-        const ad = document.getElementById('b-ad').value;
-        const yer = document.getElementById('b-nereye').value;
-        if(ad && yer) {
-            db.collection("biletler").add({ad: ad, yer: yer, no: Math.floor(1000 + Math.random() * 9000), tarih: Date.now()});
-            alert("Biletiniz Hazır! İyi Yolculuklar.");
-            document.getElementById('b-ad').value = ""; document.getElementById('b-nereye').value = "";
+    // OTOMATİK ONAY VE KAYIT SİSTEMİ
+    async function basvuruyuOnayla(id, isim) {
+        if(confirm(isim + " ekibe eklensin mi?")) {
+            await db.collection("ekip").add({ad: isim, rol: "uye"}); // Otomatik ekip listesine ekler
+            await db.collection("basvurular").doc(id).delete(); // Başvuru listesinden siler
+            alert(isim + " artık ekibin bir parçası!");
         }
     }
 
-    db.collection("biletler").orderBy("tarih","desc").onSnapshot(s => {
-        document.getElementById('count-bilet').innerText = s.size;
-        document.getElementById('list-biletler').innerHTML = s.docs.map(d => {
-            const b = d.data();
-            return `<div class="bilet-card">
-                        <b>🎫 Yolcu:</b> ${b.ad}<br>
-                        <b>📍 Varış:</b> ${b.yer}<br>
-                        <b>🔢 Bilet No:</b> #${b.no}
-                        <button class="del-btn" onclick="sil('biletler','${d.id}')">BİLETİ İPTAL ET</button>
-                    </div>`;
-        }).join('');
+    db.collection("basvurular").onSnapshot(s => {
+        if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} <button class="action-btn" style="background:#28a745; width:auto; padding:5px;" onclick="basvuruyuOnayla('${d.id}','${d.data().ad}')">ONAYLA VE EKLE</button> <button class="action-btn" style="background:#800; width:auto; padding:5px;" onclick="sil('basvurular','${d.id}')">REDDET</button></div>`).join('');
     });
 
     db.collection("ekip").onSnapshot(s => {
@@ -213,48 +160,14 @@
         document.getElementById('list-yon-adlari').innerHTML = yH;
     });
 
-    db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => {
-        let g="", m="";
-        s.docs.forEach(d => {
-            const dt = d.data();
-            const dBtn = `<a href="${dt.url}" target="_blank" class="download-btn">📥 İNDİR</a>`;
-            const h = `<div class="card"><img src="${dt.url}" class="img-item" onerror="this.src='https://via.placeholder.com/300x200?text=Dosya'"><br><b>${dt.bas}</b><br>${dt.tip==='mod' ? dBtn : ''}<button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`;
-            if(dt.tip==='galeri') g += h; else m += h;
-        });
-        document.getElementById('list-galeri').innerHTML = g;
-        document.getElementById('list-mod').innerHTML = m;
-    });
-
-    function mesajGonder(c, n, m) {
-        const ni = document.getElementById(n).value; const me = document.getElementById(m).value;
-        if(ni && me) db.collection(c).add({isim:ni, msg:me, tarih:Date.now()});
-        document.getElementById(m).value = "";
-    }
-    db.collection("sohbet_uye").orderBy("tarih","desc").limit(15).onSnapshot(s => { document.getElementById('msg-list-uye').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
-    db.collection("sohbet_yon").orderBy("tarih","desc").limit(15).onSnapshot(s => { document.getElementById('msg-list-yon').innerHTML = s.docs.map(d => `<div style="color:var(--gold)"><b>[YÖN] ${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
-
-    function rolVer() { db.collection("ekip").add({ad: document.getElementById('r-ad').value, rol: document.getElementById('r-rol').value}); }
-    function basvur() { db.collection("basvurular").add({ad: document.getElementById('k-ad').value}); alert("Gitti!"); }
-    db.collection("basvurular").onSnapshot(s => { if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} <button class="action-btn" style="width:auto; padding:5px;" onclick="sil('basvurular','${d.id}')">ONAYLA</button></div>`).join(''); });
-    function sil(c, id) { if(confirm("İşlem yapılsın mı?")) db.collection(c).doc(id).delete(); }
-
-    // OYUN
-    const canvas = document.getElementById("gameCanvas"); const ctx = canvas.getContext("2d");
-    let bus = {x: 180, y: 330}, obstacles = [], gameActive = false;
-    function startGame() { obstacles = []; bus.x = 180; gameActive = true; }
-    function update() {
-        if(!gameActive) return; ctx.clearRect(0,0,400,400);
-        ctx.fillStyle = "red"; ctx.fillRect(bus.x, bus.y, 40, 60);
-        if(Math.random() < 0.02) obstacles.push({x: Math.random()*360, y: -50});
-        obstacles.forEach((o, i) => {
-            o.y += 5; ctx.fillStyle = "white"; ctx.fillRect(o.x, o.y, 30, 30);
-            if(o.y > 400) obstacles.splice(i, 1);
-            if(bus.x < o.x+30 && bus.x+40 > o.x && bus.y < o.y+30 && bus.y+60 > o.y) { gameActive = false; alert("Kaza!"); }
-        });
-        requestAnimationFrame(update);
-    }
-    window.addEventListener("keydown", e => { if(e.key==="ArrowLeft" && bus.x > 0) bus.x -= 20; if(e.key==="ArrowRight" && bus.x < 360) bus.x += 20; });
-    update();
+    // Diğer temel fonksiyonlar
+    function basvur() { db.collection("basvurular").add({ad: document.getElementById('k-ad').value}); alert("Başvuru gönderildi!"); }
+    function sil(c, id) { if(confirm("Silinsin mi?")) db.collection(c).doc(id).delete(); }
+    function mesajGonder(c, n, m) { const ni = document.getElementById(n).value; const me = document.getElementById(m).value; if(ni && me) db.collection(c).add({isim:ni, msg:me, tarih:Date.now()}); document.getElementById(m).value = ""; }
+    db.collection("sohbet_uye").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-uye').innerHTML = s.docs.map(d => `<div><b>${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
+    db.collection("sohbet_yon").orderBy("tarih","desc").limit(10).onSnapshot(s => { document.getElementById('msg-list-yon').innerHTML = s.docs.map(d => `<div style="color:var(--gold)"><b>[YÖN] ${d.data().isim}:</b> ${d.data().msg}</div>`).reverse().join(''); });
+    async function urlIleYukle() { const t=document.getElementById('i-tip').value, b=document.getElementById('i-bas').value, u=document.getElementById('i-url').value; if(u && b) { await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); alert("Eklendi!"); } }
+    db.collection("icerik").orderBy("tarih","desc").onSnapshot(s => { let g="", m=""; s.docs.forEach(d => { const dt=d.data(); const h=`<div class="card"><img src="${dt.url}" style="width:100%"><br><b>${dt.bas}</b><button class="del-btn" onclick="sil('icerik','${d.id}')">SİL</button></div>`; if(dt.tip==='galeri') g+=h; else m+=h; }); document.getElementById('list-galeri').innerHTML=g; document.getElementById('list-mod').innerHTML=m; });
 </script>
 </body>
 </html>
