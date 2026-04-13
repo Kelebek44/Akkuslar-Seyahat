@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKKUŞLAR SEYAHAT | TERMİNAL V92</title>
+    <title>AKKUŞLAR SEYAHAT | TERMİNAL V93</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -25,17 +25,18 @@
         .b-kurucu { background: var(--gold); color: #000; }
         .b-admin { background: var(--admin); color: #000; }
         .b-yonetici { background: var(--yon); color: #fff; }
-        .kurucu-only, .editor-only { display: none; }
+        .kurucu-only, .admin-only, .editor-only { display: none; }
         .kurucu-mode .kurucu-only, .kurucu-mode .editor-only { display: block !important; }
         .admin-mode .editor-only, .yonetici-mode .editor-only { display: block !important; }
         .del-btn { background: #800; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; width: 100%; font-weight: bold; }
-        .kurucu-mode .del-btn { display: block !important; }
+        .kurucu-mode .del-btn, .admin-mode .del-btn { display: block !important; }
         .download-btn { background: #28a745; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; display: block; text-decoration: none; margin-top: 10px; text-align: center; font-size: 12px; }
         .back-btn { background: #222; color: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid #444; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 11px; }
         input, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 10px; }
         .action-btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
         .img-item { width: 100%; height: 200px; border-radius: 10px; object-fit: cover; border: 1px solid #444; margin-bottom: 10px; }
         canvas { background: #111; border: 2px solid var(--p); border-radius: 10px; display: block; margin: 0 auto; }
+        .bilet-card { background: linear-gradient(135deg, #1a1a1a, #2a0000); border: 2px dashed var(--p); color: white; padding: 15px; border-radius: 10px; text-align: left; position: relative; }
     </style>
 </head>
 <body id="app-body">
@@ -52,6 +53,7 @@
     <button class="nav-btn" onclick="sayfa(4, this)">📜 Ekip Kuralları</button>
     <button class="nav-btn" onclick="sayfa(8, this)">🖼️ Galeri / Kaplama</button>
     <button class="nav-btn" onclick="sayfa(7, this)">🛠️ Modlar / Müzikler</button>
+    <button class="nav-btn" onclick="sayfa(21, this)">🎫 Sanal Bilet Al</button>
     <button class="nav-btn" onclick="sayfa(20, this)">🎮 Mini Oyun</button>
     <button class="nav-btn" onclick="sayfa(12, this)">🛡️ Yönetim Telsizi</button>
     <button class="nav-btn" onclick="sayfa(5, this)">✍️ Ekibe Katıl</button>
@@ -67,7 +69,7 @@
     <div id="p1" class="panel aktif">
         <div class="grid">
             <div class="card"><h3>Üye Sayısı</h3><h1 id="count-uye" style="color:var(--p); margin:0;">0</h1></div>
-            <div class="card"><h3>Yönetim</h3><h1 id="count-yon" style="color:var(--gold); margin:0;">0</h1></div>
+            <div class="card"><h3>Aktif Yolcu</h3><h1 id="count-bilet" style="color:var(--gold); margin:0;">0</h1></div>
         </div>
         <div class="card">
             <h3>📢 Ekip Telsizi</h3>
@@ -80,6 +82,20 @@
         </div>
     </div>
 
+    <div id="p21" class="panel">
+        <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
+        <h1>🎫 Sanal Bilet Gişesi</h1>
+        <div class="grid">
+            <div class="card">
+                <h3>Biletini Al</h3>
+                <input type="text" id="b-ad" placeholder="Adınız Soyadınız">
+                <input type="text" id="b-nereye" placeholder="Nereye Gidiyorsunuz?">
+                <button class="action-btn" onclick="biletAl()">BİLETİ ONAYLA</button>
+            </div>
+            <div id="list-biletler" class="grid" style="grid-column: span 2;"></div>
+        </div>
+    </div>
+
     <div id="p2" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>👥 Ekip Üyeleri</h1><div id="list-uye-adlari" class="grid"></div></div>
     <div id="p3" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Yönetim Kadrosu</h1><div id="list-yon-adlari" class="grid"></div></div>
     <div id="p4" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>📜 Ekip Kuralları</h1><div class="card" style="text-align:left;">1. Kurucuya mutlak saygı.<br>2. Küfür ve saygısızlık yasaktır.<br>3. Konvoy disiplinine uyulmalıdır.</div></div>
@@ -89,11 +105,7 @@
     <div id="p20" class="panel">
         <button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button>
         <h1>🎮 Mini Otobüs Oyunu</h1>
-        <div class="card">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <p>Ok tuşları ile hareket et, engellerden kaç!</p>
-            <button class="action-btn" onclick="startGame()" style="width:200px;">BAŞLAT</button>
-        </div>
+        <div class="card"><canvas id="gameCanvas" width="400" height="400"></canvas><p>Ok tuşları ile hareket et!</p><button class="action-btn" onclick="startGame()" style="width:200px;">BAŞLAT</button></div>
     </div>
 
     <div id="p13" class="panel">
@@ -120,7 +132,7 @@
         </div>
     </div>
     
-    <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>✍️ Ekibe Katıl</h1><div class="card"><input type="text" id="k-ad" placeholder="Adınız..."><button onclick="basvur()" class="action-btn">GÖNDER</button></div></div>
+    <div id="p5" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>✍️ Ekibe Katıl</h1><div class="card"><input type="text" id="k-ad" placeholder="İsminiz..."><button onclick="basvur()" class="action-btn">GÖNDER</button></div></div>
     <div id="p12" class="panel"><button class="back-btn" onclick="sayfa(1)">🔙 Ana Sayfa</button><h1>🛡️ Yönetim Telsizi</h1><div class="card"><div id="msg-list-yon" style="height:300px; overflow-y:auto; background:#000; padding:15px; border-radius:10px; border:2px solid var(--gold); text-align:left;"></div><div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="nick-yon" placeholder="İsim" style="width:20%;"><input type="text" id="msg-yon" placeholder="Mesaj..." style="width:80%;"><button onclick="mesajGonder('sohbet_yon', 'nick-yon', 'msg-yon')" class="action-btn" style="background:var(--gold); color:black; width:100px;">GÖNDER</button></div></div></div>
 </div>
 
@@ -153,7 +165,7 @@
 
     function setBg() { 
         const url = document.getElementById('bg-url').value;
-        if(url) db.collection("ayarlar").doc("tema").set({bg: url}).then(() => alert("Tamam!"));
+        if(url) db.collection("ayarlar").doc("tema").set({bg: url}).then(() => alert("Güncellendi!"));
     }
     db.collection("ayarlar").doc("tema").onSnapshot(d => { if(d.exists()) document.body.style.backgroundImage = `url('${d.data().bg}')`; });
 
@@ -164,11 +176,35 @@
         if(u && b) { await db.collection("icerik").add({tip:t, bas:b, url:u, tarih:Date.now()}); alert("Eklendi!"); }
     }
 
+    // BİLET SİSTEMİ
+    function biletAl() {
+        const ad = document.getElementById('b-ad').value;
+        const yer = document.getElementById('b-nereye').value;
+        if(ad && yer) {
+            db.collection("biletler").add({ad: ad, yer: yer, no: Math.floor(1000 + Math.random() * 9000), tarih: Date.now()});
+            alert("Biletiniz Hazır! İyi Yolculuklar.");
+            document.getElementById('b-ad').value = ""; document.getElementById('b-nereye').value = "";
+        }
+    }
+
+    db.collection("biletler").orderBy("tarih","desc").onSnapshot(s => {
+        document.getElementById('count-bilet').innerText = s.size;
+        document.getElementById('list-biletler').innerHTML = s.docs.map(d => {
+            const b = d.data();
+            return `<div class="bilet-card">
+                        <b>🎫 Yolcu:</b> ${b.ad}<br>
+                        <b>📍 Varış:</b> ${b.yer}<br>
+                        <b>🔢 Bilet No:</b> #${b.no}
+                        <button class="del-btn" onclick="sil('biletler','${d.id}')">BİLETİ İPTAL ET</button>
+                    </div>`;
+        }).join('');
+    });
+
     db.collection("ekip").onSnapshot(s => {
         let u=0, y=0, uH="", yH="";
         s.docs.forEach(d => {
             const dt = d.data();
-            const h = `<div class="card"><span class="badge b-${dt.rol}">${dt.rol.toUpperCase()}</span><br><b>${dt.ad}</b><button class="del-btn" onclick="sil('ekip','${d.id}')">SİL</button></div>`;
+            const h = `<div class="card"><span class="badge b-${dt.rol}">${dt.rol.toUpperCase()}</span><br><b>${dt.ad}</b><button class="del-btn" onclick="sil('ekip','${d.id}')">KADRODAN AT</button></div>`;
             if(dt.rol==='uye') { u++; uH+=h; } else { y++; yH+=h; }
         });
         document.getElementById('count-uye').innerText = u;
@@ -200,15 +236,15 @@
     function rolVer() { db.collection("ekip").add({ad: document.getElementById('r-ad').value, rol: document.getElementById('r-rol').value}); }
     function basvur() { db.collection("basvurular").add({ad: document.getElementById('k-ad').value}); alert("Gitti!"); }
     db.collection("basvurular").onSnapshot(s => { if(aktifRol!=='uye') document.getElementById('list-basvuru').innerHTML = s.docs.map(d => `<div class="card">👤 ${d.data().ad} <button class="action-btn" style="width:auto; padding:5px;" onclick="sil('basvurular','${d.id}')">ONAYLA</button></div>`).join(''); });
-    function sil(c, id) { if(confirm("Silinsin mi?")) db.collection(c).doc(id).delete(); }
+    function sil(c, id) { if(confirm("İşlem yapılsın mı?")) db.collection(c).doc(id).delete(); }
 
-    // OTOBÜS OYUNU
+    // OYUN
     const canvas = document.getElementById("gameCanvas"); const ctx = canvas.getContext("2d");
     let bus = {x: 180, y: 330}, obstacles = [], gameActive = false;
     function startGame() { obstacles = []; bus.x = 180; gameActive = true; }
     function update() {
         if(!gameActive) return; ctx.clearRect(0,0,400,400);
-        ctx.fillStyle = "red"; ctx.fillRect(bus.x, bus.y, 40, 60); // Otobüs
+        ctx.fillStyle = "red"; ctx.fillRect(bus.x, bus.y, 40, 60);
         if(Math.random() < 0.02) obstacles.push({x: Math.random()*360, y: -50});
         obstacles.forEach((o, i) => {
             o.y += 5; ctx.fillStyle = "white"; ctx.fillRect(o.x, o.y, 30, 30);
